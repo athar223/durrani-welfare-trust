@@ -1,0 +1,35 @@
+# Frontend (deployed separately)
+frontend/
+node_modules/
+.next/
+
+# Desktop installer artifacts
+build/
+dist/
+installer/
+installer_output/
+*.exe
+*.spec
+*.bat
+
+# Build outputs
+staticfiles/
+__pycache__/
+*.pyc
+*.pyo
+
+# Local data
+db.sqlite3
+db.sqlite3-journal
+media/
+backups/
+.dwt_running.lock
+
+# Reports
+*.pdf
+
+# Misc
+.git/
+.vscode/
+.idea/
+*.log
