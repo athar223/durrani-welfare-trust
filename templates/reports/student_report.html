@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Student Report{% endblock %}
+{% block heading %}Student Report{% endblock %}
+
+{% block page_actions %}
+<button onclick="window.print()" class="btn btn-dwt no-print">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+    Print
+</button>
+<a href="{% url 'reports:student_report_pdf' %}" class="btn btn-outline-secondary no-print ms-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+    Download PDF
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Stat Cards -->
+<div class="row row-deck row-cards mb-4">
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="subheader">Total Students</div>
+                </div>
+                <div class="h1 mb-0 mt-2">{{ total_students|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="subheader">Active Students</div>
+                </div>
+                <div class="h1 mb-0 mt-2 text-success">{{ active_students|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="subheader">Inactive Students</div>
+                </div>
+                <div class="h1 mb-0 mt-2 text-danger">{{ inactive_students|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row row-deck row-cards mb-4">
+    <!-- By Education Level -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Students by Education Level</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-vcenter card-table">
+                    <thead>
+                        <tr>
+                            <th>Education Level</th>
+                            <th class="text-end">Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in by_education_level %}
+                        <tr>
+                            <td>{{ item.level_display }}</td>
+                            <td class="text-end">{{ item.count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="2" class="text-muted text-center">No data available</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Admissions -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Monthly Admissions (Last 12 Months)</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-vcenter card-table">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th class="text-end">Admissions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in monthly_admissions %}
+                        <tr>
+                            <td>{{ item.month|date:"F Y" }}</td>
+                            <td class="text-end">{{ item.count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="2" class="text-muted text-center">No data available</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Student Table -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">All Students</h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Guardian</th>
+                    <th>Contact</th>
+                    <th>Education Level</th>
+                    <th>Admission Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ student.full_name }}</td>
+                    <td>{{ student.age }}</td>
+                    <td>{{ student.guardian_name }}</td>
+                    <td>{{ student.contact_number }}</td>
+                    <td>{{ student.get_education_level_display }}</td>
+                    <td>{{ student.admission_date|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if student.is_active %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="text-muted text-center">No students found</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

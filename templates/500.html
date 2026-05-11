@@ -1,0 +1,28 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Server Error - Durrani Welfare Trust</title>
+    <link href="{% static 'css/tabler.min.css' %}" rel="stylesheet"/>
+</head>
+<body class="d-flex flex-column" style="min-height:100vh;background:#f4f6fa;">
+    <div class="page page-center">
+        <div class="container-tight py-4">
+            <div class="empty">
+                <div class="empty-header">500</div>
+                <p class="empty-title">Something went wrong</p>
+                <p class="empty-subtitle text-muted">
+                    An unexpected error occurred. Please try again or contact the administrator.
+                </p>
+                <div class="empty-action">
+                    <a href="/" class="btn" style="background:#1a6b3c;color:#fff;">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

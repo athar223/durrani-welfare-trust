@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}{{ volunteer.full_name }}{% endblock %}
+{% block heading %}{{ volunteer.full_name }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'volunteers:volunteer_edit' volunteer.pk %}" class="btn btn-dwt me-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+    Edit
+</a>
+<a href="{% url 'volunteers:volunteer_delete' volunteer.pk %}" class="btn btn-outline-danger">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+    Delete
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body text-center">
+                {% if volunteer.profile_image %}
+                <img src="{{ volunteer.profile_image.url }}" class="rounded-circle mb-3" width="120" height="120" style="object-fit: cover;" alt="{{ volunteer.full_name }}">
+                {% else %}
+                <div class="avatar avatar-xl rounded-circle bg-dwt-green text-white mb-3 mx-auto" style="width:120px;height:120px;font-size:2.5rem;display:flex;align-items:center;justify-content:center;">
+                    {{ volunteer.first_name.0 }}{{ volunteer.last_name.0 }}
+                </div>
+                {% endif %}
+                <h3 class="mb-1">{{ volunteer.full_name }}</h3>
+                <p class="text-muted">{{ volunteer.get_role_display }}</p>
+                {% if volunteer.status == 'active' %}
+                <span class="badge bg-success">Active</span>
+                {% elif volunteer.status == 'inactive' %}
+                <span class="badge bg-danger">Inactive</span>
+                {% elif volunteer.status == 'on_leave' %}
+                <span class="badge bg-warning">On Leave</span>
+                {% endif %}
+                <span class="badge bg-blue ms-1">{{ volunteer.get_availability_display }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Volunteer Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Role:</strong></div>
+                    <div class="col-sm-8">{{ volunteer.get_role_display }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Contact:</strong></div>
+                    <div class="col-sm-8">{{ volunteer.contact_number }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Email:</strong></div>
+                    <div class="col-sm-8">{{ volunteer.email|default:"--" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Address:</strong></div>
+                    <div class="col-sm-8">{{ volunteer.address|default:"--" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Joining Date:</strong></div>
+                    <div class="col-sm-8">{{ volunteer.joining_date }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Availability:</strong></div>
+                    <div class="col-sm-8">{{ volunteer.get_availability_display }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Skills:</strong></div>
+                    <div class="col-sm-8">
+                        {% if volunteer.skills %}
+                            {% for skill in volunteer.skills.split:',' %}
+                            <span class="badge bg-azure me-1 mb-1">{{ skill|striptags }}</span>
+                            {% endfor %}
+                        {% else %}
+                            --
+                        {% endif %}
+                    </div>
+                </div>
+                {% if volunteer.assigned_tasks %}
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Assigned Tasks:</strong></div>
+                    <div class="col-sm-8">{{ volunteer.assigned_tasks|linebreaksbr }}</div>
+                </div>
+                {% endif %}
+                {% if volunteer.notes %}
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Notes:</strong></div>
+                    <div class="col-sm-8">{{ volunteer.notes }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h3 class="card-title">Attendance History</h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in attendance_records %}
+                <tr>
+                    <td>{{ record.date }}</td>
+                    <td>
+                        {% if record.status == 'present' %}
+                        <span class="badge bg-success">Present</span>
+                        {% elif record.status == 'absent' %}
+                        <span class="badge bg-danger">Absent</span>
+                        {% else %}
+                        <span class="badge bg-warning">Leave</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ record.remarks|default:"--" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="text-center text-muted py-4">No attendance records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

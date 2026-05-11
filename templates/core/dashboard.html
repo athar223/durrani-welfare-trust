@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Dashboard{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Primary Stats -->
+<div class="row row-deck row-cards mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Students</div>
+                <div class="h1 mb-0 mt-2">{{ total_students }}</div>
+                <a href="{% url 'students:student_list' %}" class="small text-muted">View all &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Staff</div>
+                <div class="h1 mb-0 mt-2">{{ total_staff }}</div>
+                <a href="{% url 'staff:staff_list' %}" class="small text-muted">View all &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Volunteers</div>
+                <div class="h1 mb-0 mt-2">{{ total_volunteers }}</div>
+                <a href="{% url 'volunteers:volunteer_list' %}" class="small text-muted">View all &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Drivers</div>
+                <div class="h1 mb-0 mt-2">{{ total_drivers }}</div>
+                <a href="{% url 'drivers:driver_list' %}" class="small text-muted">View all &rarr;</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Financial Stats -->
+<div class="row row-deck row-cards mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Donations</div>
+                <div class="h2 mb-0 mt-2 text-success">Rs. {{ total_donations|intcomma }}</div>
+                <a href="{% url 'accounts:donation_list' %}" class="small text-muted">View all &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Expenses</div>
+                <div class="h2 mb-0 mt-2 text-danger">Rs. {{ total_expenses|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Balance</div>
+                <div class="h2 mb-0 mt-2 {% if balance >= 0 %}text-success{% else %}text-danger{% endif %}">
+                    Rs. {{ balance|intcomma }}
+                </div>
+                <a href="{% url 'accounts:financial_summary' %}" class="small text-muted">Summary &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Active Projects</div>
+                <div class="h2 mb-0 mt-2">{{ active_projects }}</div>
+                <a href="{% url 'projects:project_list' %}" class="small text-muted">View all &rarr;</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Monthly & Daily Stats -->
+<div class="row row-deck row-cards mb-4">
+    <div class="col-6 col-lg-2">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Monthly Donations</div>
+                <div class="h3 mt-2 text-success">Rs. {{ monthly_donations|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Monthly Expenses</div>
+                <div class="h3 mt-2 text-danger">Rs. {{ monthly_expenses|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Ambulance Trips</div>
+                <div class="h3 mt-2">{{ monthly_trips }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Today's Daily Exp.</div>
+                <div class="h3 mt-2 text-warning">Rs. {{ today_daily_expenses|intcomma }}</div>
+                <a href="{% url 'daily_expenses:daily_expense_list' %}" class="small text-muted">Details &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Monthly Daily Exp.</div>
+                <div class="h3 mt-2 text-warning">Rs. {{ monthly_daily_expenses|intcomma }}</div>
+                <a href="{% url 'daily_expenses:daily_expense_summary' %}" class="small text-muted">Summary &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Salaries</div>
+                <div class="h3 mt-2">
+                    <a href="{% url 'salaries:salary_list' %}" class="text-decoration-none">Manage &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart & Recent Donations -->
+<div class="row row-deck row-cards">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Financial Overview</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="financialChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recent Donations</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-vcenter card-table">
+                    <tbody>
+                        {% for donation in recent_donations %}
+                        <tr>
+                            <td>
+                                <div class="fw-medium">{{ donation.donor_name }}</div>
+                                <div class="text-muted small">{{ donation.date|date:"M d, Y" }}</div>
+                            </td>
+                            <td class="text-end text-success">Rs. {{ donation.amount|intcomma }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td class="text-muted text-center" colspan="2">No donations yet</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Students & Expenses -->
+<div class="row row-deck row-cards mt-3">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recent Students</h3>
+                <div class="card-actions">
+                    <a href="{% url 'students:student_add' %}" class="btn btn-sm btn-dwt">Add New</a>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-vcenter card-table">
+                    <thead>
+                        <tr><th>Name</th><th>Education</th><th>Admission</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for student in recent_students %}
+                        <tr>
+                            <td>{{ student.full_name }}</td>
+                            <td>{{ student.get_education_level_display }}</td>
+                            <td>{{ student.admission_date|date:"M d, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td class="text-muted text-center" colspan="3">No students yet</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recent Expenses</h3>
+                <div class="card-actions">
+                    <a href="{% url 'accounts:expense_add' %}" class="btn btn-sm btn-dwt">Add New</a>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-vcenter card-table">
+                    <tbody>
+                        {% for expense in recent_expenses %}
+                        <tr>
+                            <td>
+                                <div class="fw-medium">{{ expense.description|truncatechars:30 }}</div>
+                                <div class="text-muted small">{{ expense.get_category_display }}</div>
+                            </td>
+                            <td class="text-end text-danger">Rs. {{ expense.amount|intcomma }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td class="text-muted text-center" colspan="2">No expenses yet</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    const ctx = document.getElementById('financialChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_labels|safe }},
+            datasets: [
+                {
+                    label: 'Donations',
+                    data: {{ chart_donations|safe }},
+                    backgroundColor: 'rgba(26, 107, 60, 0.7)',
+                    borderColor: '#1a6b3c',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Expenses',
+                    data: {{ chart_expenses|safe }},
+                    backgroundColor: 'rgba(214, 57, 57, 0.7)',
+                    borderColor: '#d63939',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, ticks: { callback: v => 'Rs. ' + v.toLocaleString() } }
+            }
+        }
+    });
+</script>
+{% endblock %}

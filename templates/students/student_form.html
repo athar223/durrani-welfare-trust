@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}{% if object %}Edit Student{% else %}Add Student{% endif %}{% endblock %}
+{% block heading %}{% if object %}Edit Student: {{ object.full_name }}{% else %}Add New Student{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{% if object %}Edit Student{% else %}New Student{% endif %}</h3>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.first_name.id_for_label }}">First Name <span class="text-danger">*</span></label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}<div class="invalid-feedback d-block">{{ form.first_name.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.last_name.id_for_label }}">Last Name <span class="text-danger">*</span></label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}<div class="invalid-feedback d-block">{{ form.last_name.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.age.id_for_label }}">Age <span class="text-danger">*</span></label>
+                        {{ form.age }}
+                        {% if form.age.errors %}<div class="invalid-feedback d-block">{{ form.age.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.education_level.id_for_label }}">Education Level <span class="text-danger">*</span></label>
+                        {{ form.education_level }}
+                        {% if form.education_level.errors %}<div class="invalid-feedback d-block">{{ form.education_level.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.admission_date.id_for_label }}">Admission Date <span class="text-danger">*</span></label>
+                        {{ form.admission_date }}
+                        {% if form.admission_date.errors %}<div class="invalid-feedback d-block">{{ form.admission_date.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.guardian_name.id_for_label }}">Guardian Name <span class="text-danger">*</span></label>
+                        {{ form.guardian_name }}
+                        {% if form.guardian_name.errors %}<div class="invalid-feedback d-block">{{ form.guardian_name.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.guardian_relation.id_for_label }}">Guardian Relation <span class="text-danger">*</span></label>
+                        {{ form.guardian_relation }}
+                        {% if form.guardian_relation.errors %}<div class="invalid-feedback d-block">{{ form.guardian_relation.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.contact_number.id_for_label }}">Contact Number <span class="text-danger">*</span></label>
+                        {{ form.contact_number }}
+                        {% if form.contact_number.errors %}<div class="invalid-feedback d-block">{{ form.contact_number.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.address.id_for_label }}">Address</label>
+                {{ form.address }}
+                {% if form.address.errors %}<div class="invalid-feedback d-block">{{ form.address.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.profile_image.id_for_label }}">Profile Image</label>
+                        {{ form.profile_image }}
+                        {% if form.profile_image.errors %}<div class="invalid-feedback d-block">{{ form.profile_image.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3 pt-4">
+                        <label class="form-check">
+                            {{ form.is_active }}
+                            <span class="form-check-label">Active Student</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.notes.id_for_label }}">Notes</label>
+                {{ form.notes }}
+                {% if form.notes.errors %}<div class="invalid-feedback d-block">{{ form.notes.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'students:student_list' %}" class="btn">Cancel</a>
+                <button type="submit" class="btn btn-dwt">{% if object %}Update Student{% else %}Add Student{% endif %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

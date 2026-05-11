@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}{{ driver.full_name }}{% endblock %}
+{% block heading %}{{ driver.full_name }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'drivers:driver_trip_add' %}" class="btn btn-outline-info me-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    Add Trip
+</a>
+<a href="{% url 'drivers:driver_fuel_add' %}" class="btn btn-outline-warning me-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    Add Fuel
+</a>
+<a href="{% url 'drivers:driver_maintenance_add' %}" class="btn btn-outline-secondary me-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    Add Maintenance
+</a>
+<a href="{% url 'drivers:driver_edit' driver.pk %}" class="btn btn-dwt me-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+    Edit
+</a>
+<a href="{% url 'drivers:driver_delete' driver.pk %}" class="btn btn-outline-danger">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+    Delete
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body text-center">
+                {% if driver.profile_image %}
+                <img src="{{ driver.profile_image.url }}" class="rounded-circle mb-3" width="120" height="120" style="object-fit: cover;" alt="{{ driver.full_name }}">
+                {% else %}
+                <div class="avatar avatar-xl rounded-circle bg-dwt-green text-white mb-3 mx-auto" style="width:120px;height:120px;font-size:2.5rem;display:flex;align-items:center;justify-content:center;">
+                    {{ driver.first_name.0 }}{{ driver.last_name.0 }}
+                </div>
+                {% endif %}
+                <h3 class="mb-1">{{ driver.full_name }}</h3>
+                <p class="text-muted">{{ driver.get_shift_display }} Shift</p>
+                {% if driver.is_active %}
+                <span class="badge bg-success">Active</span>
+                {% else %}
+                <span class="badge bg-secondary">Inactive</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Driver Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Contact:</strong></div>
+                    <div class="col-sm-8">{{ driver.contact_number }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Email:</strong></div>
+                    <div class="col-sm-8">{{ driver.email|default:"--" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Address:</strong></div>
+                    <div class="col-sm-8">{{ driver.address|default:"--" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>License Number:</strong></div>
+                    <div class="col-sm-8">{{ driver.license_number }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>License Expiry:</strong></div>
+                    <div class="col-sm-8">{{ driver.license_expiry|default:"--" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Vehicle Assigned:</strong></div>
+                    <div class="col-sm-8">{{ driver.vehicle_assigned|default:"--" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Shift:</strong></div>
+                    <div class="col-sm-8">{{ driver.get_shift_display }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Joining Date:</strong></div>
+                    <div class="col-sm-8">{{ driver.joining_date }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Base Salary:</strong></div>
+                    <div class="col-sm-8">Rs. {{ driver.base_salary|intcomma }}</div>
+                </div>
+                {% if driver.notes %}
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Notes:</strong></div>
+                    <div class="col-sm-8">{{ driver.notes }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs for Trips / Fuel / Maintenance -->
+<div class="card mt-3">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+            <li class="nav-item">
+                <a href="#tab-trips" class="nav-link active" data-bs-toggle="tab">Trips (Last 10)</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab-fuel" class="nav-link" data-bs-toggle="tab">Fuel Logs (Last 10)</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tab-maintenance" class="nav-link" data-bs-toggle="tab">Maintenance (Last 10)</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content">
+            <!-- Trips Tab -->
+            <div class="tab-pane active show" id="tab-trips">
+                <div class="table-responsive">
+                    <table class="table table-vcenter">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Vehicle</th>
+                                <th>Patient</th>
+                                <th>Pickup</th>
+                                <th>Drop</th>
+                                <th>Distance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for trip in recent_trips %}
+                            <tr>
+                                <td>{{ trip.date }}</td>
+                                <td>{{ trip.vehicle_used }}</td>
+                                <td>{{ trip.patient_name|default:"--" }}</td>
+                                <td>{{ trip.pickup_location }}</td>
+                                <td>{{ trip.drop_location }}</td>
+                                <td>{{ trip.distance_km|default:"--" }} {% if trip.distance_km %}km{% endif %}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">No trip logs found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Fuel Tab -->
+            <div class="tab-pane" id="tab-fuel">
+                <div class="table-responsive">
+                    <table class="table table-vcenter">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Vehicle</th>
+                                <th>Liters</th>
+                                <th>Cost</th>
+                                <th>Odometer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fuel in recent_fuel %}
+                            <tr>
+                                <td>{{ fuel.date }}</td>
+                                <td>{{ fuel.vehicle_used }}</td>
+                                <td>{{ fuel.fuel_liters }}</td>
+                                <td>Rs. {{ fuel.cost|intcomma }}</td>
+                                <td>{{ fuel.odometer_reading|default:"--" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">No fuel logs found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Maintenance Tab -->
+            <div class="tab-pane" id="tab-maintenance">
+                <div class="table-responsive">
+                    <table class="table table-vcenter">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Vehicle</th>
+                                <th>Description</th>
+                                <th>Cost</th>
+                                <th>Mechanic</th>
+                                <th>Next Due</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for maint in recent_maintenance %}
+                            <tr>
+                                <td>{{ maint.date }}</td>
+                                <td>{{ maint.vehicle_used }}</td>
+                                <td>{{ maint.description|truncatewords:10 }}</td>
+                                <td>Rs. {{ maint.cost|intcomma }}</td>
+                                <td>{{ maint.mechanic_name|default:"--" }}</td>
+                                <td>{{ maint.next_maintenance_date|default:"--" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">No maintenance logs found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

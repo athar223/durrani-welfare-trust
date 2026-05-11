@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Expense - {{ expense.description }}{% endblock %}
+{% block heading %}Expense Details{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'accounts:expense_edit' expense.pk %}" class="btn btn-dwt">Edit</a>
+<a href="{% url 'accounts:expense_delete' expense.pk %}" class="btn btn-outline-danger ms-2">Delete</a>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{ expense.description }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="datagrid">
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Description</div>
+                        <div class="datagrid-content">{{ expense.description }}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Amount</div>
+                        <div class="datagrid-content"><strong class="text-danger">Rs. {{ expense.amount|intcomma }}</strong></div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Date</div>
+                        <div class="datagrid-content">{{ expense.date|date:"d M Y" }}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Category</div>
+                        <div class="datagrid-content"><span class="badge bg-red-lt">{{ expense.get_category_display }}</span></div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Payment Method</div>
+                        <div class="datagrid-content">{{ expense.get_payment_method_display }}</div>
+                    </div>
+                    {% if expense.paid_to %}
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Paid To</div>
+                        <div class="datagrid-content">{{ expense.paid_to }}</div>
+                    </div>
+                    {% endif %}
+                    {% if expense.reference_number %}
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Reference Number</div>
+                        <div class="datagrid-content">{{ expense.reference_number }}</div>
+                    </div>
+                    {% endif %}
+                    {% if expense.approved_by %}
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Approved By</div>
+                        <div class="datagrid-content">{{ expense.approved_by }}</div>
+                    </div>
+                    {% endif %}
+                    {% if expense.notes %}
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Notes</div>
+                        <div class="datagrid-content">{{ expense.notes }}</div>
+                    </div>
+                    {% endif %}
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Created</div>
+                        <div class="datagrid-content">{{ expense.created_at|date:"d M Y H:i" }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'accounts:expense_list' %}" class="btn btn-outline-secondary">Back to Expenses</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

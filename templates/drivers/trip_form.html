@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Add Trip Log{% endblock %}
+{% block heading %}Add Trip Log{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">New Trip Log</h3>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.driver.id_for_label }}">Driver <span class="text-danger">*</span></label>
+                        {{ form.driver }}
+                        {% if form.driver.errors %}<div class="invalid-feedback d-block">{{ form.driver.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.date.id_for_label }}">Date <span class="text-danger">*</span></label>
+                        {{ form.date }}
+                        {% if form.date.errors %}<div class="invalid-feedback d-block">{{ form.date.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.vehicle_used.id_for_label }}">Vehicle Used <span class="text-danger">*</span></label>
+                        {{ form.vehicle_used }}
+                        {% if form.vehicle_used.errors %}<div class="invalid-feedback d-block">{{ form.vehicle_used.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.patient_name.id_for_label }}">Patient Name</label>
+                        {{ form.patient_name }}
+                        {% if form.patient_name.errors %}<div class="invalid-feedback d-block">{{ form.patient_name.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.pickup_location.id_for_label }}">Pickup Location <span class="text-danger">*</span></label>
+                        {{ form.pickup_location }}
+                        {% if form.pickup_location.errors %}<div class="invalid-feedback d-block">{{ form.pickup_location.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.drop_location.id_for_label }}">Drop Location <span class="text-danger">*</span></label>
+                        {{ form.drop_location }}
+                        {% if form.drop_location.errors %}<div class="invalid-feedback d-block">{{ form.drop_location.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.purpose.id_for_label }}">Purpose</label>
+                        {{ form.purpose }}
+                        {% if form.purpose.errors %}<div class="invalid-feedback d-block">{{ form.purpose.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.distance_km.id_for_label }}">Distance (km)</label>
+                        {{ form.distance_km }}
+                        {% if form.distance_km.errors %}<div class="invalid-feedback d-block">{{ form.distance_km.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.notes.id_for_label }}">Notes</label>
+                {{ form.notes }}
+                {% if form.notes.errors %}<div class="invalid-feedback d-block">{{ form.notes.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'drivers:driver_trip_list' %}" class="btn">Cancel</a>
+                <button type="submit" class="btn btn-dwt">Add Trip Log</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Add Maintenance Log{% endblock %}
+{% block heading %}Add Maintenance Log{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">New Maintenance Log</h3>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.driver.id_for_label }}">Driver <span class="text-danger">*</span></label>
+                        {{ form.driver }}
+                        {% if form.driver.errors %}<div class="invalid-feedback d-block">{{ form.driver.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.date.id_for_label }}">Date <span class="text-danger">*</span></label>
+                        {{ form.date }}
+                        {% if form.date.errors %}<div class="invalid-feedback d-block">{{ form.date.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.vehicle_used.id_for_label }}">Vehicle Used <span class="text-danger">*</span></label>
+                        {{ form.vehicle_used }}
+                        {% if form.vehicle_used.errors %}<div class="invalid-feedback d-block">{{ form.vehicle_used.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.cost.id_for_label }}">Cost (Rs.) <span class="text-danger">*</span></label>
+                        {{ form.cost }}
+                        {% if form.cost.errors %}<div class="invalid-feedback d-block">{{ form.cost.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.mechanic_name.id_for_label }}">Mechanic Name</label>
+                        {{ form.mechanic_name }}
+                        {% if form.mechanic_name.errors %}<div class="invalid-feedback d-block">{{ form.mechanic_name.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.description.id_for_label }}">Description <span class="text-danger">*</span></label>
+                {{ form.description }}
+                {% if form.description.errors %}<div class="invalid-feedback d-block">{{ form.description.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.next_maintenance_date.id_for_label }}">Next Maintenance Date</label>
+                        {{ form.next_maintenance_date }}
+                        {% if form.next_maintenance_date.errors %}<div class="invalid-feedback d-block">{{ form.next_maintenance_date.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'drivers:driver_list' %}" class="btn">Cancel</a>
+                <button type="submit" class="btn btn-dwt">Add Maintenance Log</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

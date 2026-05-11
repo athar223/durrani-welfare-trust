@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Daily Expenses{% endblock %}
+{% block heading %}Daily Expenses{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'daily_expenses:daily_expense_add' %}" class="btn btn-dwt">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    Add Expense
+</a>
+<a href="{% url 'daily_expenses:daily_expense_summary' %}" class="btn btn-outline-primary ms-1">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+    Summary
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Filters -->
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-auto">
+                <label class="form-label">From</label>
+                <input type="date" name="date_from" class="form-control" value="{{ date_from }}">
+            </div>
+            <div class="col-auto">
+                <label class="form-label">To</label>
+                <input type="date" name="date_to" class="form-control" value="{{ date_to }}">
+            </div>
+            <div class="col-auto">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    {% for value, label in category_choices %}
+                    <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-dwt">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Filter
+                </button>
+                <a href="{% url 'daily_expenses:daily_expense_list' %}" class="btn btn-outline-secondary">Clear</a>
+            </div>
+            <div class="col-auto ms-auto">
+                <a href="{% url 'daily_expenses:daily_expense_export_csv' %}{% if date_from or date_to %}?date_from={{ date_from }}&date_to={{ date_to }}{% endif %}" class="btn btn-outline-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Export CSV
+                </a>
+                <a href="{% url 'daily_expenses:daily_expense_export_pdf' %}{% if date_from or date_to %}?date_from={{ date_from }}&date_to={{ date_to }}{% endif %}" class="btn btn-outline-danger ms-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                    Export PDF
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Summary Row -->
+<div class="row mb-3">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="subheader">Total Records</div>
+                </div>
+                <div class="h1 mb-0">{{ total_count|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="subheader">Total Amount</div>
+                </div>
+                <div class="h1 mb-0">Rs. {{ total_amount|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Expenses Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th class="text-end">Amount</th>
+                    <th>Paid By</th>
+                    <th class="text-end no-print">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in page_obj %}
+                <tr>
+                    <td class="text-nowrap">{{ expense.date }}</td>
+                    <td>
+                        {% if expense.category == 'breakfast' %}
+                        <span class="badge bg-blue-lt text-blue">{{ expense.get_category_display }}</span>
+                        {% elif expense.category == 'lunch' %}
+                        <span class="badge bg-azure-lt text-azure">{{ expense.get_category_display }}</span>
+                        {% elif expense.category == 'snacks' %}
+                        <span class="badge bg-cyan-lt text-cyan">{{ expense.get_category_display }}</span>
+                        {% elif expense.category == 'health_checkup' %}
+                        <span class="badge bg-green-lt text-green">{{ expense.get_category_display }}</span>
+                        {% elif expense.category == 'medicine' %}
+                        <span class="badge bg-lime-lt text-lime">{{ expense.get_category_display }}</span>
+                        {% elif expense.category == 'cleaning' %}
+                        <span class="badge bg-yellow-lt text-yellow">{{ expense.get_category_display }}</span>
+                        {% elif expense.category == 'stationery' %}
+                        <span class="badge bg-orange-lt text-orange">{{ expense.get_category_display }}</span>
+                        {% elif expense.category == 'transport' %}
+                        <span class="badge bg-purple-lt text-purple">{{ expense.get_category_display }}</span>
+                        {% else %}
+                        <span class="badge bg-secondary-lt text-secondary">{{ expense.get_category_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ expense.description }}</td>
+                    <td class="text-end text-nowrap"><strong>Rs. {{ expense.amount|intcomma }}</strong></td>
+                    <td>{{ expense.paid_by|default:"-" }}</td>
+                    <td class="text-end no-print">
+                        <a href="{% url 'daily_expenses:daily_expense_edit' expense.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a href="{% url 'daily_expenses:daily_expense_delete' expense.pk %}" class="btn btn-sm btn-outline-danger ms-1">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">No expenses found. <a href="{% url 'daily_expenses:daily_expense_add' %}">Add one</a>.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if page_obj.has_other_pages %}
+    <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} entries</p>
+        <ul class="pagination m-0 ms-auto">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&date_from={{ date_from }}&date_to={{ date_to }}&category={{ selected_category }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    Prev
+                </a>
+            </li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}&date_from={{ date_from }}&date_to={{ date_to }}&category={{ selected_category }}">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}&date_from={{ date_from }}&date_to={{ date_to }}&category={{ selected_category }}">
+                    Next
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Volunteers{% endblock %}
+{% block heading %}Volunteers{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'volunteers:volunteer_attendance' %}" class="btn btn-outline-primary me-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+    Attendance
+</a>
+<a href="{% url 'volunteers:volunteer_export_csv' %}" class="btn btn-outline-secondary me-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+    Export CSV
+</a>
+<a href="{% url 'volunteers:volunteer_add' %}" class="btn btn-dwt">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    Add Volunteer
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">All Volunteers</h3>
+        <div class="card-actions">
+            <form method="get" class="d-flex gap-2">
+                <select name="status" class="form-select" style="width: auto;" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                    <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+                    <option value="on_leave" {% if status_filter == 'on_leave' %}selected{% endif %}>On Leave</option>
+                </select>
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search by name or skills..." value="{{ search }}">
+                    <button type="submit" class="btn btn-dwt">Search</button>
+                    {% if search or status_filter %}
+                    <a href="{% url 'volunteers:volunteer_list' %}" class="btn btn-outline-secondary">Clear</a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Contact</th>
+                    <th>Skills</th>
+                    <th>Availability</th>
+                    <th>Status</th>
+                    <th class="w-1">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for volunteer in volunteers %}
+                <tr>
+                    <td>
+                        <a href="{% url 'volunteers:volunteer_detail' volunteer.pk %}">{{ volunteer.full_name }}</a>
+                    </td>
+                    <td>{{ volunteer.get_role_display }}</td>
+                    <td>{{ volunteer.contact_number }}</td>
+                    <td>{{ volunteer.skills|truncatewords:5|default:"--" }}</td>
+                    <td>{{ volunteer.get_availability_display }}</td>
+                    <td>
+                        {% if volunteer.status == 'active' %}
+                        <span class="badge bg-success">Active</span>
+                        {% elif volunteer.status == 'inactive' %}
+                        <span class="badge bg-danger">Inactive</span>
+                        {% elif volunteer.status == 'on_leave' %}
+                        <span class="badge bg-warning">On Leave</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-list flex-nowrap">
+                            <a href="{% url 'volunteers:volunteer_edit' volunteer.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a href="{% url 'volunteers:volunteer_delete' volunteer.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        {% if search or status_filter %}
+                        No volunteers found matching your criteria.
+                        {% else %}
+                        No volunteers added yet. <a href="{% url 'volunteers:volunteer_add' %}">Add a volunteer</a>.
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if is_paginated %}
+    <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">
+            Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count|intcomma }} volunteers
+        </p>
+        <ul class="pagination m-0 ms-auto">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    Prev
+                </a>
+            </li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                    Next
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

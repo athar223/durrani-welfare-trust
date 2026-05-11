@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Financial Report{% endblock %}
+{% block heading %}Financial Report{% endblock %}
+
+{% block page_actions %}
+<button onclick="window.print()" class="btn btn-dwt no-print">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+    Print
+</button>
+<a href="{% url 'reports:financial_report_pdf' %}" class="btn btn-outline-secondary no-print ms-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+    Download PDF
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Summary Cards -->
+<div class="row row-deck row-cards mb-4">
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Donations</div>
+                <div class="h1 mb-0 mt-2 text-success">Rs. {{ total_donations|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Expenses</div>
+                <div class="h1 mb-0 mt-2 text-danger">Rs. {{ total_expenses|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Balance</div>
+                <div class="h1 mb-0 mt-2 {% if balance >= 0 %}text-success{% else %}text-danger{% endif %}">Rs. {{ balance|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row row-deck row-cards mb-4">
+    <!-- Donations by Category -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Donations by Category</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-vcenter card-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th class="text-end">Count</th>
+                            <th class="text-end">Amount (Rs.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in donations_by_category %}
+                        <tr>
+                            <td>{{ item.category_display }}</td>
+                            <td class="text-end">{{ item.count }}</td>
+                            <td class="text-end">{{ item.total|intcomma }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="text-muted text-center">No donations recorded</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expenses by Category -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Expenses by Category</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-vcenter card-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th class="text-end">Count</th>
+                            <th class="text-end">Amount (Rs.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in expenses_by_category %}
+                        <tr>
+                            <td>{{ item.category_display }}</td>
+                            <td class="text-end">{{ item.count }}</td>
+                            <td class="text-end">{{ item.total|intcomma }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="text-muted text-center">No expenses recorded</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Monthly Summary -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Monthly Financial Summary (Last 12 Months)</h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table table-striped">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th class="text-end">Donations (Rs.)</th>
+                    <th class="text-end">Expenses (Rs.)</th>
+                    <th class="text-end">Net (Rs.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in monthly_summary %}
+                <tr>
+                    <td>{{ item.month|date:"F Y" }}</td>
+                    <td class="text-end text-success">{{ item.donations|intcomma }}</td>
+                    <td class="text-end text-danger">{{ item.expenses|intcomma }}</td>
+                    <td class="text-end {% if item.net >= 0 %}text-success{% else %}text-danger{% endif %}">{{ item.net|intcomma }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-muted text-center">No data available</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

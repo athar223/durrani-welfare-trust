@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Salary Summary{% endblock %}
+{% block heading %}Salary Summary{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'salaries:salary_list' %}" class="btn btn-outline-secondary">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    Back to List
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Month Filter -->
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-auto">
+                <label class="form-label">Filter by Month</label>
+                <input type="month" name="month" class="form-control" value="{{ month_filter }}">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-dwt">Filter</button>
+                <a href="{% url 'salaries:salary_summary' %}" class="btn btn-outline-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Overall Summary Cards -->
+<div class="row mb-3">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Records</div>
+                <div class="h1 mb-0">{{ total_count|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Net Salary</div>
+                <div class="h1 mb-0">Rs. {{ total_net|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Paid</div>
+                <div class="h1 mb-0 text-success">Rs. {{ total_paid|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Pending</div>
+                <div class="h1 mb-0 text-warning">Rs. {{ total_pending|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Breakdown Cards -->
+<div class="row mb-3">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Base Salary</div>
+                <div class="h2 mb-0">Rs. {{ total_base|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Allowances</div>
+                <div class="h2 mb-0 text-info">Rs. {{ total_allowances|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Deductions</div>
+                <div class="h2 mb-0 text-danger">Rs. {{ total_deductions|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Bonuses</div>
+                <div class="h2 mb-0 text-success">Rs. {{ total_bonus|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Employee Type Breakdown -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Staff Breakdown</h3>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-blue me-2">Staff</span>
+                    <span class="text-muted">{{ staff_count }} record{{ staff_count|pluralize }}</span>
+                </div>
+                <div class="h2">Rs. {{ staff_total|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Driver Breakdown</h3>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-purple me-2">Drivers</span>
+                    <span class="text-muted">{{ driver_count }} record{{ driver_count|pluralize }}</span>
+                </div>
+                <div class="h2">Rs. {{ driver_total|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overtime Summary -->
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Overtime Summary</h3>
+            </div>
+            <div class="card-body">
+                <div class="h2">Rs. {{ total_overtime|intcomma }}</div>
+                <p class="text-muted">Total overtime payments across all records</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if chart_labels %}
+<!-- Chart Data (for JS charting) -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Monthly Salary Trend</h3>
+    </div>
+    <div class="card-body">
+        <canvas id="salaryChart" height="80"></canvas>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+{% if chart_labels %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script>
+    const ctx = document.getElementById('salaryChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_labels|safe }},
+            datasets: [{
+                label: 'Total Net Salary (Rs.)',
+                data: [{{ chart_values|join:", " }}],
+                backgroundColor: 'rgba(26, 107, 60, 0.6)',
+                borderColor: '#1a6b3c',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rs. ' + value.toLocaleString();
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Rs. ' + context.parsed.y.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

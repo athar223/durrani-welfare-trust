@@ -1,0 +1,57 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <title>Login - Durrani Welfare Trust</title>
+    <link href="{% static 'css/tabler.min.css' %}" rel="stylesheet"/>
+    <style>
+        body { background: linear-gradient(135deg, #0f3d22 0%, #1a6b3c 50%, #0d4a28 100%); min-height: 100vh; }
+        .login-logo { max-height: 80px; margin-bottom: 1rem; }
+    </style>
+</head>
+<body class="d-flex flex-column">
+    <div class="page page-center">
+        <div class="container container-tight py-4">
+            <div class="text-center mb-4">
+                <h2 class="text-white fw-bold">Durrani Welfare Trust</h2>
+                <p class="text-white-50">Management Information System</p>
+            </div>
+            <div class="card card-md shadow-lg">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Sign in to your account</h2>
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+                    {% endfor %}
+                    {% endif %}
+                    {% if form.errors %}
+                    <div class="alert alert-danger">Invalid username or password.</div>
+                    {% endif %}
+                    <form method="post" autocomplete="off">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            {{ form.username }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            {{ form.password }}
+                        </div>
+                        <div class="form-footer">
+                            <button type="submit" class="btn w-100" style="background-color:#1a6b3c;color:#fff;font-weight:600;">
+                                Sign In
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="text-center text-white-50 mt-3">
+                <small>&copy; {% now "Y" %} Durrani Welfare Trust. All rights reserved.</small>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/tabler.min.js' %}"></script>
+</body>
+</html>

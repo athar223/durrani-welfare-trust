@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Log Fuel{% endblock %}
+{% block heading %}Log Fuel{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">New Fuel Log</h3>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.vehicle.id_for_label }}">Vehicle <span class="text-danger">*</span></label>
+                        {{ form.vehicle }}
+                        {% if form.vehicle.errors %}<div class="invalid-feedback d-block">{{ form.vehicle.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.date.id_for_label }}">Date <span class="text-danger">*</span></label>
+                        {{ form.date }}
+                        {% if form.date.errors %}<div class="invalid-feedback d-block">{{ form.date.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.fuel_liters.id_for_label }}">Fuel (Liters) <span class="text-danger">*</span></label>
+                        {{ form.fuel_liters }}
+                        {% if form.fuel_liters.errors %}<div class="invalid-feedback d-block">{{ form.fuel_liters.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.cost.id_for_label }}">Cost (Rs.) <span class="text-danger">*</span></label>
+                        {{ form.cost }}
+                        {% if form.cost.errors %}<div class="invalid-feedback d-block">{{ form.cost.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.odometer_reading.id_for_label }}">Odometer Reading</label>
+                        {{ form.odometer_reading }}
+                        {% if form.odometer_reading.errors %}<div class="invalid-feedback d-block">{{ form.odometer_reading.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.station_name.id_for_label }}">Station Name</label>
+                {{ form.station_name }}
+                {% if form.station_name.errors %}<div class="invalid-feedback d-block">{{ form.station_name.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'ambulance:ambulance_dashboard' %}" class="btn">Cancel</a>
+                <button type="submit" class="btn btn-dwt">Save Fuel Log</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

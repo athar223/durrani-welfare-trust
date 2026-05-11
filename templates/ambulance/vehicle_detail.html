@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}{{ vehicle.vehicle_number }}{% endblock %}
+{% block heading %}{{ vehicle.vehicle_number }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'ambulance:vehicle_edit' vehicle.pk %}" class="btn btn-dwt me-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+    Edit
+</a>
+<a href="{% url 'ambulance:vehicle_delete' vehicle.pk %}" class="btn btn-outline-danger">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+    Delete
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Vehicle Info Card -->
+<div class="card mb-3">
+    <div class="card-header">
+        <h3 class="card-title">Vehicle Information</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Vehicle Number:</strong></div>
+                    <div class="col-sm-8">{{ vehicle.vehicle_number }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Type:</strong></div>
+                    <div class="col-sm-8">{{ vehicle.get_vehicle_type_display }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Make / Model:</strong></div>
+                    <div class="col-sm-8">{{ vehicle.make_model }}</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Year:</strong></div>
+                    <div class="col-sm-8">{{ vehicle.year }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Status:</strong></div>
+                    <div class="col-sm-8">
+                        {% if vehicle.is_active %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if vehicle.notes %}
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Notes:</strong></div>
+                    <div class="col-sm-8">{{ vehicle.notes }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs for Trips / Fuel / Maintenance -->
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+            <li class="nav-item">
+                <a href="#tabs-trips" class="nav-link active" data-bs-toggle="tab">Trips ({{ trips|length }})</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tabs-fuel" class="nav-link" data-bs-toggle="tab">Fuel Logs ({{ fuel_logs|length }})</a>
+            </li>
+            <li class="nav-item">
+                <a href="#tabs-maintenance" class="nav-link" data-bs-toggle="tab">Maintenance ({{ maintenance_logs|length }})</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content">
+            <!-- Trips Tab -->
+            <div class="tab-pane active show" id="tabs-trips">
+                <div class="table-responsive">
+                    <table class="table table-vcenter">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Driver</th>
+                                <th>Patient</th>
+                                <th>Pickup</th>
+                                <th>Drop</th>
+                                <th>Distance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for trip in trips %}
+                            <tr>
+                                <td>{{ trip.date }}</td>
+                                <td>{{ trip.driver }}</td>
+                                <td>{{ trip.patient_name }}</td>
+                                <td>{{ trip.pickup_location }}</td>
+                                <td>{{ trip.drop_location }}</td>
+                                <td>{{ trip.distance_km|default:"--" }} km</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">No trips recorded for this vehicle.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Fuel Tab -->
+            <div class="tab-pane" id="tabs-fuel">
+                <div class="table-responsive">
+                    <table class="table table-vcenter">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Liters</th>
+                                <th>Cost (Rs.)</th>
+                                <th>Odometer</th>
+                                <th>Station</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in fuel_logs %}
+                            <tr>
+                                <td>{{ log.date }}</td>
+                                <td>{{ log.fuel_liters }}</td>
+                                <td>{{ log.cost|intcomma }}</td>
+                                <td>{{ log.odometer_reading|default:"--" }}</td>
+                                <td>{{ log.station_name|default:"--" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">No fuel logs recorded for this vehicle.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Maintenance Tab -->
+            <div class="tab-pane" id="tabs-maintenance">
+                <div class="table-responsive">
+                    <table class="table table-vcenter">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Cost (Rs.)</th>
+                                <th>Mechanic</th>
+                                <th>Next Maintenance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in maintenance_logs %}
+                            <tr>
+                                <td>{{ log.date }}</td>
+                                <td>{{ log.description }}</td>
+                                <td>{{ log.cost|intcomma }}</td>
+                                <td>{{ log.mechanic_name|default:"--" }}</td>
+                                <td>{{ log.next_maintenance_date|default:"--" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">No maintenance logs recorded for this vehicle.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

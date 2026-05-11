@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}{% if object %}Edit Project{% else %}Add Project{% endif %}{% endblock %}
+{% block heading %}{% if object %}Edit Project: {{ object.name }}{% else %}Add New Project{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{% if object %}Edit Project{% else %}New Project{% endif %}</h3>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.name.id_for_label }}">Project Name <span class="text-danger">*</span></label>
+                        {{ form.name }}
+                        {% if form.name.errors %}<div class="invalid-feedback d-block">{{ form.name.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.category.id_for_label }}">Category <span class="text-danger">*</span></label>
+                        {{ form.category }}
+                        {% if form.category.errors %}<div class="invalid-feedback d-block">{{ form.category.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.description.id_for_label }}">Description <span class="text-danger">*</span></label>
+                {{ form.description }}
+                {% if form.description.errors %}<div class="invalid-feedback d-block">{{ form.description.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.location.id_for_label }}">Location <span class="text-danger">*</span></label>
+                        {{ form.location }}
+                        {% if form.location.errors %}<div class="invalid-feedback d-block">{{ form.location.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.start_date.id_for_label }}">Start Date <span class="text-danger">*</span></label>
+                        {{ form.start_date }}
+                        {% if form.start_date.errors %}<div class="invalid-feedback d-block">{{ form.start_date.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.end_date.id_for_label }}">End Date</label>
+                        {{ form.end_date }}
+                        {% if form.end_date.errors %}<div class="invalid-feedback d-block">{{ form.end_date.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.budget.id_for_label }}">Budget <span class="text-danger">*</span></label>
+                        {{ form.budget }}
+                        {% if form.budget.errors %}<div class="invalid-feedback d-block">{{ form.budget.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.expenses.id_for_label }}">Expenses</label>
+                        {{ form.expenses }}
+                        {% if form.expenses.errors %}<div class="invalid-feedback d-block">{{ form.expenses.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.beneficiaries_count.id_for_label }}">Beneficiaries Count</label>
+                        {{ form.beneficiaries_count }}
+                        {% if form.beneficiaries_count.errors %}<div class="invalid-feedback d-block">{{ form.beneficiaries_count.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.status.id_for_label }}">Status <span class="text-danger">*</span></label>
+                        {{ form.status }}
+                        {% if form.status.errors %}<div class="invalid-feedback d-block">{{ form.status.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.notes.id_for_label }}">Notes</label>
+                {{ form.notes }}
+                {% if form.notes.errors %}<div class="invalid-feedback d-block">{{ form.notes.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'projects:project_list' %}" class="btn">Cancel</a>
+                <button type="submit" class="btn btn-dwt">{% if object %}Update Project{% else %}Add Project{% endif %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

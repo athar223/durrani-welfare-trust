@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Salaries{% endblock %}
+{% block heading %}Salaries & Compensation{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'salaries:salary_add' %}" class="btn btn-dwt">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    Add Salary
+</a>
+<a href="{% url 'salaries:salary_generate' %}" class="btn btn-outline-primary ms-1">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><polyline points="16 16 12 12 8 16"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path></svg>
+    Generate Salaries
+</a>
+<a href="{% url 'salaries:salary_summary' %}" class="btn btn-outline-primary ms-1">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+    Summary
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Filters -->
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-auto">
+                <label class="form-label">Month</label>
+                <input type="month" name="month" class="form-control" value="{{ month_filter }}">
+            </div>
+            <div class="col-auto">
+                <label class="form-label">Employee Type</label>
+                <select name="employee_type" class="form-select">
+                    <option value="">All Types</option>
+                    {% for value, label in employee_type_choices %}
+                    <option value="{{ value }}" {% if employee_type_filter == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-dwt">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Filter
+                </button>
+                <a href="{% url 'salaries:salary_list' %}" class="btn btn-outline-secondary">Clear</a>
+            </div>
+            <div class="col-auto ms-auto">
+                <a href="{% url 'salaries:salary_export_csv' %}{% if month_filter %}?month={{ month_filter }}{% endif %}" class="btn btn-outline-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Export CSV
+                </a>
+                <a href="{% url 'salaries:salary_export_pdf' %}{% if month_filter %}?month={{ month_filter }}{% endif %}" class="btn btn-outline-danger ms-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                    Export PDF
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Summary Row -->
+<div class="row mb-3">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Records</div>
+                <div class="h1 mb-0">{{ total_count|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Net Salary</div>
+                <div class="h1 mb-0">Rs. {{ total_net|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Paid</div>
+                <div class="h1 mb-0 text-success">Rs. {{ total_paid|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="subheader">Total Pending</div>
+                <div class="h1 mb-0 text-warning">Rs. {{ total_pending|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-vcenter table-hover card-table">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Type</th>
+                    <th>Month</th>
+                    <th class="text-end">Base</th>
+                    <th class="text-end">Allowances</th>
+                    <th class="text-end">Deductions</th>
+                    <th class="text-end">Bonus</th>
+                    <th class="text-end">Overtime</th>
+                    <th class="text-end">Net Salary</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for salary in page_obj %}
+                <tr>
+                    <td>
+                        <a href="{% url 'salaries:salary_detail' salary.pk %}">{{ salary.employee_name }}</a>
+                    </td>
+                    <td>
+                        <span class="badge bg-{{ salary.employee_type|yesno:'blue,purple' }}">{{ salary.get_employee_type_display }}</span>
+                    </td>
+                    <td>{{ salary.month|date:"M Y" }}</td>
+                    <td class="text-end">Rs. {{ salary.base_salary|intcomma }}</td>
+                    <td class="text-end">Rs. {{ salary.allowances|intcomma }}</td>
+                    <td class="text-end">Rs. {{ salary.deductions|intcomma }}</td>
+                    <td class="text-end">Rs. {{ salary.bonus|intcomma }}</td>
+                    <td class="text-end">Rs. {{ salary.overtime_amount|intcomma }}</td>
+                    <td class="text-end"><strong>Rs. {{ salary.net_salary|intcomma }}</strong></td>
+                    <td>
+                        {% if salary.status == 'pending' %}
+                        <span class="badge bg-yellow text-dark">Pending</span>
+                        {% elif salary.status == 'paid' %}
+                        <span class="badge bg-green">Paid</span>
+                        {% elif salary.status == 'cancelled' %}
+                        <span class="badge bg-red">Cancelled</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <div class="btn-group">
+                            <a href="{% url 'salaries:salary_detail' salary.pk %}" class="btn btn-sm btn-outline-primary" title="View">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </a>
+                            <a href="{% url 'salaries:salary_edit' salary.pk %}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </a>
+                            {% if salary.status == 'pending' %}
+                            <form method="post" action="{% url 'salaries:salary_mark_paid' salary.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-success" title="Mark Paid" onclick="return confirm('Mark this salary as paid?')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </button>
+                            </form>
+                            {% endif %}
+                            <a href="{% url 'salaries:salary_delete' salary.pk %}" class="btn btn-sm btn-outline-danger" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="11" class="text-center text-muted py-4">No salary records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if page_obj.has_other_pages %}
+    <div class="card-footer d-flex align-items-center">
+        <p class="m-0 text-muted">Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }}</p>
+        <ul class="pagination m-0 ms-auto">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&month={{ month_filter }}&employee_type={{ employee_type_filter }}&status={{ status_filter }}">Prev</a></li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}&month={{ month_filter }}&employee_type={{ employee_type_filter }}&status={{ status_filter }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&month={{ month_filter }}&employee_type={{ employee_type_filter }}&status={{ status_filter }}">Next</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

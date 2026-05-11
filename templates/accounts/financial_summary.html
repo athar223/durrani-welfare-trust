@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Financial Summary{% endblock %}
+{% block heading %}Financial Summary{% endblock %}
+
+{% block content %}
+<!-- Summary Cards -->
+<div class="row row-deck row-cards mb-4">
+    <div class="col-sm-6 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="subheader">Total Donations</div>
+                </div>
+                <div class="h1 mb-0 mt-2 text-success">Rs. {{ total_donations|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="subheader">Total Expenses</div>
+                </div>
+                <div class="h1 mb-0 mt-2 text-danger">Rs. {{ total_expenses|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="subheader">Balance</div>
+                </div>
+                <div class="h1 mb-0 mt-2 {% if balance >= 0 %}text-success{% else %}text-danger{% endif %}">Rs. {{ balance|intcomma }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Monthly Breakdown -->
+<div class="row row-deck row-cards mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Monthly Breakdown</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-vcenter card-table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th class="text-end">Donations</th>
+                            <th class="text-end">Expenses</th>
+                            <th class="text-end">Net</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in monthly_breakdown %}
+                        <tr>
+                            <td>{{ row.month|date:"F Y" }}</td>
+                            <td class="text-end text-success">Rs. {{ row.donations|intcomma }}</td>
+                            <td class="text-end text-danger">Rs. {{ row.expenses|intcomma }}</td>
+                            <td class="text-end {% if row.net >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                Rs. {{ row.net|intcomma }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">No data available yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Category Breakdown -->
+<div class="row row-deck row-cards">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Donations by Category</h3>
+            </div>
+            <div class="card-body">
+                {% for item in donation_by_category %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>{{ item.label }}</span>
+                        <span class="text-success fw-bold">Rs. {{ item.total|intcomma }}</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" style="width: {{ item.percentage }}%" role="progressbar"
+                             aria-valuenow="{{ item.percentage }}" aria-valuemin="0" aria-valuemax="100">
+                            <span class="visually-hidden">{{ item.percentage|floatformat:1 }}%</span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted text-center">No donation data available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Expenses by Category</h3>
+            </div>
+            <div class="card-body">
+                {% for item in expense_by_category %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>{{ item.label }}</span>
+                        <span class="text-danger fw-bold">Rs. {{ item.total|intcomma }}</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-danger" style="width: {{ item.percentage }}%" role="progressbar"
+                             aria-valuenow="{{ item.percentage }}" aria-valuemin="0" aria-valuemax="100">
+                            <span class="visually-hidden">{{ item.percentage|floatformat:1 }}%</span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted text-center">No expense data available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

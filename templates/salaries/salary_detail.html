@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Salary Detail - {{ salary.employee_name }}{% endblock %}
+{% block heading %}Salary Detail{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'salaries:salary_list' %}" class="btn btn-outline-secondary">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    Back to List
+</a>
+<a href="{% url 'salaries:salary_edit' salary.pk %}" class="btn btn-outline-warning ms-1">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+    Edit
+</a>
+{% if salary.status == 'pending' %}
+<form method="post" action="{% url 'salaries:salary_mark_paid' salary.pk %}" class="d-inline ms-1">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success" onclick="return confirm('Mark this salary as paid?')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Mark as Paid
+    </button>
+</form>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3 class="card-title">{{ salary.employee_name }} - {{ salary.month|date:"F Y" }}</h3>
+                <div class="card-actions">
+                    {% if salary.status == 'pending' %}
+                    <span class="badge bg-yellow text-dark">Pending</span>
+                    {% elif salary.status == 'paid' %}
+                    <span class="badge bg-green">Paid</span>
+                    {% elif salary.status == 'cancelled' %}
+                    <span class="badge bg-red">Cancelled</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="datagrid">
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Employee Type</div>
+                        <div class="datagrid-content">
+                            <span class="badge bg-{{ salary.employee_type|yesno:'blue,purple' }}">{{ salary.get_employee_type_display }}</span>
+                        </div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Employee ID</div>
+                        <div class="datagrid-content">{{ salary.employee_id }}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Month</div>
+                        <div class="datagrid-content">{{ salary.month|date:"F Y" }}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Payment Method</div>
+                        <div class="datagrid-content">{{ salary.get_payment_method_display }}</div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Payment Date</div>
+                        <div class="datagrid-content">{{ salary.payment_date|date:"d M Y"|default:"Not yet paid" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Salary Breakdown -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3 class="card-title">Salary Breakdown</h3>
+            </div>
+            <table class="table table-vcenter card-table">
+                <tbody>
+                    <tr>
+                        <td class="w-50">Base Salary</td>
+                        <td class="text-end"><strong>Rs. {{ salary.base_salary|intcomma }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Allowances</td>
+                        <td class="text-end text-success">+ Rs. {{ salary.allowances|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Bonus</td>
+                        <td class="text-end text-success">+ Rs. {{ salary.bonus|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Overtime ({{ salary.overtime_hours }} hrs x Rs. {{ salary.overtime_rate }})</td>
+                        <td class="text-end text-success">+ Rs. {{ salary.overtime_amount|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Deductions</td>
+                        <td class="text-end text-danger">- Rs. {{ salary.deductions|intcomma }}</td>
+                    </tr>
+                    <tr class="bg-light">
+                        <td><strong>Net Salary</strong></td>
+                        <td class="text-end"><strong class="h3 mb-0">Rs. {{ salary.net_salary|intcomma }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <!-- Notes -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3 class="card-title">Notes</h3>
+            </div>
+            <div class="card-body">
+                {% if salary.notes %}
+                <p>{{ salary.notes|linebreaksbr }}</p>
+                {% else %}
+                <p class="text-muted">No notes.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Metadata -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Record Info</h3>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <small class="text-muted">Created</small><br>
+                    {{ salary.created_at|date:"d M Y, H:i" }}
+                </div>
+                <div>
+                    <small class="text-muted">Last Updated</small><br>
+                    {{ salary.updated_at|date:"d M Y, H:i" }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
