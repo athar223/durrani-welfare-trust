@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: dwt-backend
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput"
+    startCommand: "gunicorn durrani_welfare_system.wsgi --bind 0.0.0.0:$PORT --workers 2 --timeout 60"
+    healthCheckPath: /api/v1/
+    envVars:
+      - key: DWT_DEBUG
+        value: "0"
+      - key: DWT_SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: dwt-db
+          property: connectionString
+      - key: WEB_CONCURRENCY
+        value: "2"
+
+databases:
+  - name: dwt-db
+    plan: free
+    databaseName: dwt
+    user: dwt_user
