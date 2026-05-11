@@ -3,15 +3,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "durrani_welfare_system/wsgi.py",
+      "src": "api/index.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "50mb",
-        "runtime": "python3.12"
+        "maxLambdaSize": "50mb"
       }
     }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "durrani_welfare_system/wsgi.py" }
+    { "src": "/(.*)", "dest": "api/index.py" }
   ]
 }
