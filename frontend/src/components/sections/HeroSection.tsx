@@ -4,7 +4,14 @@ import { Heart, Users, GraduationCap, LogIn } from 'lucide-react';
 
 export default function HeroSection() {
   return (
-    <section className="relative bg-gradient-to-br from-dwt-800 via-dwt-700 to-dwt-500 text-white overflow-hidden">
+    <section className="relative text-white overflow-hidden">
+      {/* Background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: 'url(/hero/banner.jpeg)' }}
+      />
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-gradient-to-br from-dwt-900/85 via-dwt-800/75 to-dwt-700/70" />
       {/* Decorative shapes */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />

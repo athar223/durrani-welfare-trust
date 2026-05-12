@@ -6,6 +6,8 @@ import CampaignsSection from '@/components/sections/CampaignsSection';
 import NewsSection from '@/components/sections/NewsSection';
 import GetInvolvedSection from '@/components/sections/GetInvolvedSection';
 import CTASection from '@/components/sections/CTASection';
+import TestimonialsSection from '@/components/sections/TestimonialsSection';
+import LeadershipPreviewSection from '@/components/sections/LeadershipPreviewSection';
 import PublicLayout from '@/components/PublicLayout';
 
 export default function HomePage() {
@@ -17,6 +19,8 @@ export default function HomePage() {
       <ServicesSection />
       <CampaignsSection />
       <GetInvolvedSection />
+      <TestimonialsSection />
+      <LeadershipPreviewSection />
       <NewsSection />
       <CTASection />
     </PublicLayout>

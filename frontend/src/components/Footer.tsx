@@ -31,9 +31,11 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-white text-dwt-800 flex items-center justify-center font-heading font-bold">
-                DWT
-              </div>
+              <img
+                src="/logo.jpeg"
+                alt="Durrani Welfare Trust"
+                className="w-12 h-12 rounded-full object-cover"
+              />
               <div className="font-heading font-bold text-lg">Durrani Welfare Trust</div>
             </div>
             <p className="text-sm text-gray-300 leading-relaxed">
