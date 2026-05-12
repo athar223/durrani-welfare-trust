@@ -88,21 +88,38 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'durrani_welfare_system.wsgi.application'
 
-# Database - DATABASE_URL (Railway/Render) > DWT_DB_ENGINE > SQLite
-DATABASE_URL = os.environ.get('DATABASE_URL', '')
+# Database — priority:
+#   1. DATABASE_URL (production Postgres: Neon/Vercel/Render)
+#   2. Vercel serverless without DB → ephemeral SQLite in /tmp
+#   3. Local development → SQLite in DATA_DIR
+DATABASE_URL = os.environ.get('DATABASE_URL', '').strip()
+ON_VERCEL = bool(os.environ.get('VERCEL', '') or os.environ.get('VERCEL_ENV', ''))
 
 if DATABASE_URL:
-    import dj_database_url
-    DATABASES = {'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
-elif os.environ.get('DWT_DB_ENGINE', '').lower() == 'postgres':
+    try:
+        import dj_database_url
+        DATABASES = {'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)}
+    except ImportError:
+        # Fallback: parse manually
+        import re
+        m = re.match(r'postgres(?:ql)?://(?P<user>[^:]+):(?P<pwd>[^@]+)@(?P<host>[^:/]+)(?::(?P<port>\d+))?/(?P<name>[^?]+)', DATABASE_URL)
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': m.group('name'),
+                'USER': m.group('user'),
+                'PASSWORD': m.group('pwd'),
+                'HOST': m.group('host'),
+                'PORT': m.group('port') or '5432',
+                'OPTIONS': {'sslmode': 'require'},
+            }
+        }
+elif ON_VERCEL:
+    # Ephemeral SQLite for Vercel testing (data lost on cold start)
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DWT_DB_NAME', 'dwt_db'),
-            'USER': os.environ.get('DWT_DB_USER', 'dwt_user'),
-            'PASSWORD': os.environ.get('DWT_DB_PASSWORD', ''),
-            'HOST': os.environ.get('DWT_DB_HOST', 'localhost'),
-            'PORT': os.environ.get('DWT_DB_PORT', '5432'),
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': '/tmp/dwt_db.sqlite3',
         }
     }
 else:
