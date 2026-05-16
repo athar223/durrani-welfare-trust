@@ -41,7 +41,8 @@ export default function NewsPage() {
       <PageHeader
         title="News & Announcements"
         subtitle="Stay updated with our latest news, events, and welfare activities"
-        breadcrumb="Updates"
+        breadcrumb={[{ label: 'Home', href: '/' }, { label: 'News' }]}
+        image="/gallery/girls-certificates.jpeg"
       />
 
       <section className="section-padding bg-gray-50">

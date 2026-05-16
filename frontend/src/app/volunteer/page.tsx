@@ -77,9 +77,27 @@ export default function VolunteerPage() {
     <PublicLayout>
       <PageHeader
         title="Become a Volunteer"
-        subtitle="Join our team of dedicated volunteers and help us make a difference in the community"
-        breadcrumb="Get Involved"
+        subtitle="Join our team of change-makers serving orphan girls and underprivileged families in Gilgit-Baltistan"
+        breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Volunteer' }]}
+        image="/gallery/women-training.jpeg"
       />
+
+      <section className="py-8 bg-white border-b border-gray-100">
+        <div className="container-page max-w-3xl">
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              { title: 'Orphan Care', desc: 'Help care for girls at our orphanage — activities, tutoring, and companionship.' },
+              { title: 'Field Outreach', desc: 'Assist with Ramadan rations, Eid gifts, and emergency relief distribution.' },
+              { title: 'Skills Training', desc: 'Support women at the Rawasia Waheed HUB with sewing, embroidery, and literacy.' },
+            ].map((r) => (
+              <div key={r.title} className="bg-dwt-50 border border-dwt-100 rounded-xl p-4">
+                <h4 className="font-heading font-bold text-dwt-800 text-sm mb-1">{r.title}</h4>
+                <p className="text-xs text-gray-600 leading-relaxed">{r.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="section-padding bg-gray-50">
         <div className="container-page max-w-3xl">

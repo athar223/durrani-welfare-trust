@@ -1,94 +1,128 @@
+'use client';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { GraduationCap, Heart, Truck, Users, HandHeart, Stethoscope, BookOpen, ShieldCheck } from 'lucide-react';
+import {
+  Home, Baby, GraduationCap, Truck, Users, Droplets, Heart,
+  Gift, TreePine, Mic, HandHeart, HelpCircle, ArrowRight,
+} from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import PublicLayout from '@/components/PublicLayout';
+import { publicApi } from '@/lib/api';
 
-const services = [
-  {
-    icon: GraduationCap,
-    title: 'Education Support',
-    desc: 'We provide free education, books, and learning materials for underprivileged children, ensuring no child is left behind due to financial constraints.',
-    features: ['Free schooling', 'Books & uniforms', 'Tuition support', 'Special needs education'],
-  },
-  {
-    icon: BookOpen,
-    title: 'Student Scholarships',
-    desc: 'Merit-based and need-based scholarships for talented students pursuing higher education in various fields.',
-    features: ['School-level scholarships', 'College scholarships', 'University funding', 'Merit awards'],
-  },
-  {
-    icon: Truck,
-    title: 'Ambulance Services',
-    desc: 'Free emergency ambulance services available round-the-clock to serve the community in critical times.',
-    features: ['24/7 availability', 'Trained drivers', 'Emergency response', 'Hospital transfers'],
-  },
-  {
-    icon: Users,
-    title: 'Community Projects',
-    desc: 'Sustainable development projects designed to uplift entire communities and create lasting positive change.',
-    features: ['Water sanitation', 'Skill development', 'Livelihood programs', 'Infrastructure'],
-  },
-  {
-    icon: Heart,
-    title: 'Donations & Welfare',
-    desc: 'Distribution of essentials, food packages, and financial support for families in distress.',
-    features: ['Food packages', 'Cash assistance', 'Clothing drives', 'Ramadan/Eid distributions'],
-  },
-  {
-    icon: Stethoscope,
-    title: 'Medical Support',
-    desc: 'Healthcare services, free medical camps, and treatment assistance for those who cannot afford care.',
-    features: ['Free medical camps', 'Treatment funding', 'Medicine support', 'Specialist consultations'],
-  },
-  {
-    icon: HandHeart,
-    title: 'Volunteer Programs',
-    desc: 'Engage with our cause and contribute your time, skills, and passion to make a difference.',
-    features: ['Field work', 'Teaching', 'Medical assistance', 'Fundraising'],
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Disaster Relief',
-    desc: 'Emergency relief operations and rehabilitation support during natural calamities and crises.',
-    features: ['Emergency aid', 'Rehabilitation', 'Shelter support', 'Long-term recovery'],
-  },
-];
+interface Service {
+  id: number;
+  title: string;
+  slug: string;
+  short_description: string;
+  full_description: string;
+  icon: string;
+  is_featured: boolean;
+}
+
+const ICON_MAP: Record<string, React.ComponentType<{ size?: number }>> = {
+  home: Home,
+  baby: Baby,
+  'graduation-cap': GraduationCap,
+  ambulance: Truck,
+  users: Users,
+  droplets: Droplets,
+  heart: Heart,
+  gift: Gift,
+  tree: TreePine,
+  'tree-pine': TreePine,
+  mic: Mic,
+  volunteer: HandHeart,
+};
+
+function ServiceIcon({ name, size = 28 }: { name: string; size?: number }) {
+  const Icon = ICON_MAP[name] ?? HelpCircle;
+  return <Icon size={size} />;
+}
 
 export default function ServicesPage() {
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    publicApi
+      .getServices()
+      .then((res) => {
+        const data: Service[] = res.data.results ?? res.data;
+        setServices(data);
+      })
+      .catch(() => setServices([]))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <PublicLayout>
       <PageHeader
         title="Our Services"
-        subtitle="Comprehensive welfare programs designed to serve the community"
-        breadcrumb="What We Do"
+        subtitle="From sheltering orphan girls to free ambulance services — serving Gilgit-Baltistan since 2017"
+        breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Services' }]}
+        image="/gallery/madrasa-building.jpeg"
       />
 
       <section className="section-padding bg-white">
         <div className="container-page">
-          <div className="grid md:grid-cols-2 gap-6">
-            {services.map((service) => {
-              const Icon = service.icon;
-              return (
-                <div key={service.title} className="card p-8">
+          {loading ? (
+            <div className="grid md:grid-cols-2 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="card p-8 animate-pulse">
                   <div className="flex items-start gap-4 mb-4">
+                    <div className="w-14 h-14 rounded-xl bg-gray-100 flex-shrink-0" />
+                    <div className="flex-1">
+                      <div className="h-5 bg-gray-100 rounded mb-2 w-2/3" />
+                      <div className="h-4 bg-gray-100 rounded w-full" />
+                      <div className="h-4 bg-gray-100 rounded w-5/6 mt-1" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-6">
+              {services.map((service) => (
+                <div key={service.id} className="card p-8 flex flex-col">
+                  <div className="flex items-start gap-4 mb-4 flex-1">
                     <div className="w-14 h-14 rounded-xl bg-dwt-50 flex items-center justify-center text-dwt-500 flex-shrink-0">
-                      <Icon size={28} />
+                      <ServiceIcon name={service.icon} />
                     </div>
                     <div>
                       <h3 className="font-heading font-bold text-xl mb-2">{service.title}</h3>
-                      <p className="text-gray-600 leading-relaxed">{service.desc}</p>
+                      <p className="text-gray-600 leading-relaxed">{service.short_description}</p>
                     </div>
                   </div>
-                  <ul className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-gray-100">
-                    {service.features.map((feat) => (
-                      <li key={feat} className="text-sm text-gray-600 flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-dwt-500" /> {feat}
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="flex items-center justify-between mt-2">
+                    {service.is_featured && (
+                      <span className="inline-block px-2 py-0.5 bg-dwt-50 text-dwt-600 text-xs font-semibold rounded-full border border-dwt-200">
+                        Featured Programme
+                      </span>
+                    )}
+                    <Link href={`/services/${service.slug}`} className="ml-auto inline-flex items-center gap-1 text-dwt-500 font-semibold text-sm hover:text-dwt-700 transition-colors">
+                      Learn More <ArrowRight size={14} />
+                    </Link>
+                  </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
+          )}
+
+          <div className="mt-12 bg-gradient-to-r from-dwt-700 to-dwt-500 text-white rounded-2xl p-8 md:p-12 text-center">
+            <h2 className="font-heading font-bold text-2xl md:text-3xl mb-4">Support Our Work</h2>
+            <p className="text-lg text-gray-100 mb-6 max-w-2xl mx-auto">
+              Every donation, every volunteer hour, every share helps us serve more families
+              across Gilgit-Baltistan. Contact us at{' '}
+              <a href="tel:03129700108" className="font-bold text-white underline">03129700108</a>.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link href="/donate" className="px-6 py-3 bg-white text-dwt-800 font-bold rounded-lg hover:bg-dwt-50 transition-all">
+                Donate Now
+              </Link>
+              <Link href="/volunteer" className="px-6 py-3 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-dwt-800 transition-all">
+                Volunteer
+              </Link>
+            </div>
           </div>
         </div>
       </section>

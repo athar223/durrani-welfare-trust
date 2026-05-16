@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700;900&display=swap');
-
 :root {
   --dwt-primary: #1a6b3c;
   --dwt-primary-dark: #0f3d22;
@@ -14,11 +12,14 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   padding: 0;
   margin: 0;
-  font-family: 'Lato', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -27,8 +28,13 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Libre Baskerville', Georgia, serif;
+  font-family: var(--font-heading), Georgia, serif;
   letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+img {
+  max-width: 100%;
 }
 
 @layer components {
@@ -36,10 +42,10 @@ h1, h2, h3, h4, h5, h6 {
     @apply inline-flex items-center justify-center px-6 py-3 bg-dwt-500 text-white font-semibold rounded-lg shadow-soft hover:bg-dwt-600 hover:shadow-card transition-all duration-200;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-white text-dwt-500 font-semibold rounded-lg shadow-soft hover:bg-dwt-50 border border-dwt-500 transition-all duration-200;
+    @apply inline-flex items-center justify-center px-6 py-3 bg-white text-dwt-600 font-semibold rounded-lg shadow-soft hover:bg-dwt-50 border border-dwt-200 transition-all duration-200;
   }
   .btn-outline {
-    @apply inline-flex items-center justify-center px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-dwt-500 transition-all duration-200;
+    @apply inline-flex items-center justify-center px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-dwt-600 transition-all duration-200;
   }
   .container-page {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
@@ -48,12 +54,12 @@ h1, h2, h3, h4, h5, h6 {
     @apply py-16 md:py-24;
   }
   .form-input {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dwt-500 focus:border-transparent outline-none transition-all duration-200;
+    @apply w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-dwt-500 focus:border-transparent outline-none transition-all duration-200 bg-white text-gray-900;
   }
   .form-label {
-    @apply block text-sm font-semibold text-gray-700 mb-2;
+    @apply block text-sm font-semibold text-gray-700 mb-1.5;
   }
   .card {
-    @apply bg-white rounded-xl shadow-soft hover:shadow-card transition-shadow duration-300;
+    @apply bg-white rounded-2xl shadow-soft hover:shadow-card transition-shadow duration-300;
   }
 }

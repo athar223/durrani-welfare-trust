@@ -92,10 +92,40 @@ export default function EnrollPage() {
   return (
     <PublicLayout>
       <PageHeader
-        title="Student Enrollment"
-        subtitle="Apply for educational support, scholarships, and student programs"
-        breadcrumb="Get Involved"
+        title="Enroll a Child"
+        subtitle="Apply for orphanage admission, educational support, or infant care at Durrani Welfare Trust"
+        breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Get Involved', href: '/volunteer' }, { label: 'Enroll' }]}
+        image="/gallery/madrasa-building.jpeg"
       />
+
+      <section className="py-8 bg-white border-b border-gray-100">
+        <div className="container-page max-w-4xl">
+          <div className="bg-dwt-50 border border-dwt-200 rounded-xl p-6">
+            <h3 className="font-heading font-bold text-dwt-800 text-lg mb-3">
+              Required Documents for Orphanage Admission
+            </h3>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {[
+                { num: 1, text: "Child's B-Form (NADRA registration)" },
+                { num: 2, text: "Father's Death Certificate" },
+                { num: 3, text: 'School Leaving Certificate' },
+                { num: 4, text: "Guardian / Relative's Certificate" },
+              ].map((d) => (
+                <div key={d.num} className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-dwt-500 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                    {d.num}
+                  </span>
+                  <span className="text-sm text-gray-700">{d.text}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 mt-4">
+              For general student support or scholarships, upload available documents and describe your situation below. Contact us at{' '}
+              <a href="tel:03129700108" className="text-dwt-600 font-semibold">03129700108</a> for assistance.
+            </p>
+          </div>
+        </div>
+      </section>
 
       <section className="section-padding bg-gray-50">
         <div className="container-page max-w-4xl">

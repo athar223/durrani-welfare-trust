@@ -20,8 +20,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: ['"Libre Baskerville"', 'Georgia', 'serif'],
-        body: ['Lato', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-heading)', 'Georgia', 'serif'],
+        body: ['var(--font-body)', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         soft: '0 4px 20px -2px rgba(0, 0, 0, 0.08)',

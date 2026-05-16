@@ -1,52 +1,112 @@
-import { Target, Eye, Heart } from 'lucide-react';
+'use client';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { CheckCircle, ArrowRight, Heart } from 'lucide-react';
+import { publicApi } from '@/lib/api';
+
+interface AboutSectionData {
+  id: number;
+  section: string;
+  title: string;
+  content: string;
+}
+
+const FALLBACK_CONTENT =
+  'Durrani Welfare Trust is a registered NGO founded in 2017 in Konodas, Gilgit-Baltistan by ' +
+  'Mr. Waheed Faraz Durrani, who lost his own parents at the age of four months. From his ' +
+  'childhood struggles emerged a lifelong dream: that no child should grow up without shelter, ' +
+  'care, and affection.\n\nAfter his passing, his daughter Aman Faraz Durrani — then only 19 — ' +
+  'took the responsibility of carrying his legacy forward. Today the Trust shelters over 50 ' +
+  'orphan girls and serves thousands of families across Gilgit-Baltistan.';
+
+const highlights = [
+  'Orphanage for 50+ girls — shelter, education & healthcare',
+  'Free 24/7 ambulance — over 5,000 patients served',
+  'Women empowerment — Rawasia Waheed HUB (UNICEF accredited)',
+  'Ramadan rations for 3,000+ families since 2017',
+  'Pride of Pakistan Award by ISPR 2025',
+];
 
 export default function AboutSection() {
+  const [content, setContent] = useState(FALLBACK_CONTENT);
+
+  useEffect(() => {
+    publicApi
+      .getAboutSections()
+      .then((res) => {
+        const data: AboutSectionData[] = res.data.results ?? res.data;
+        const about = data.find((s) => s.section === 'about');
+        if (about?.content) setContent(about.content);
+      })
+      .catch(() => {});
+  }, []);
+
+  const paragraphs = content.split('\n\n').filter(Boolean).slice(0, 2);
+
   return (
-    <section id="about" className="section-padding bg-white">
+    <section id="about" className="section-padding bg-white overflow-hidden">
       <div className="container-page">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-dwt-500 font-bold text-sm uppercase tracking-wider">About Us</span>
-          <h2 className="font-heading font-bold text-3xl md:text-4xl mt-2 mb-4">
-            Who We Are
-          </h2>
-          <p className="text-gray-600 leading-relaxed text-lg">
-            Durrani Welfare Trust is a non-profit organization committed to creating positive change
-            in our communities through sustainable welfare programs, quality education, and accessible healthcare services.
-          </p>
-        </div>
+        <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
 
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="card p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-dwt-50 flex items-center justify-center text-dwt-500">
-              <Heart size={32} />
+          {/* Left: Photo with stats overlay */}
+          <div className="relative">
+            <div className="relative rounded-2xl overflow-hidden shadow-card">
+              <img
+                src="/gallery/orphanage-girls.jpeg"
+                alt="Girls at Durrani Welfare Trust Orphanage"
+                className="w-full h-[480px] object-cover"
+              />
+              {/* Green overlay gradient at bottom */}
+              <div className="absolute inset-0 bg-gradient-to-t from-dwt-900/80 via-transparent to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <p className="font-heading font-bold text-2xl mb-1">50+ Girls in Our Care</p>
+                <p className="text-sm text-gray-200">Given shelter, love, education & a brighter future</p>
+              </div>
             </div>
-            <h3 className="font-heading font-bold text-xl mb-3">Our Purpose</h3>
-            <p className="text-gray-600 leading-relaxed">
-              To uplift underprivileged women and children by providing them with the resources,
-              education, and support they need to build a better future.
-            </p>
+
+            {/* Floating badge */}
+            <div className="absolute -top-4 -right-4 bg-dwt-500 text-white rounded-2xl p-4 shadow-card text-center">
+              <div className="font-heading font-bold text-3xl leading-none">2017</div>
+              <div className="text-xs mt-1 text-dwt-100">Founded</div>
+            </div>
+
+            {/* Second small photo */}
+            <div className="absolute -bottom-6 -right-6 w-40 h-40 rounded-xl overflow-hidden shadow-card border-4 border-white hidden xl:block">
+              <img src="/gallery/infant-care.jpeg" alt="Infant care" className="w-full h-full object-cover" />
+            </div>
           </div>
 
-          <div className="card p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-dwt-50 flex items-center justify-center text-dwt-500">
-              <Target size={32} />
-            </div>
-            <h3 className="font-heading font-bold text-xl mb-3">Our Mission</h3>
-            <p className="text-gray-600 leading-relaxed">
-              To deliver compassionate welfare services in education, healthcare, and community
-              development that transform lives and strengthen society.
-            </p>
-          </div>
+          {/* Right: Story */}
+          <div>
+            <span className="text-dwt-500 font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+              <Heart size={14} /> Our Story
+            </span>
+            <h2 className="font-heading font-bold text-3xl md:text-4xl mt-3 mb-5 leading-snug">
+              From One Orphan's Dream to<br />
+              <span className="text-dwt-600">Thousands Served</span>
+            </h2>
 
-          <div className="card p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-dwt-50 flex items-center justify-center text-dwt-500">
-              <Eye size={32} />
+            {paragraphs.map((para, i) => (
+              <p key={i} className="text-gray-600 leading-relaxed text-base mb-4">{para}</p>
+            ))}
+
+            <ul className="space-y-3 mb-8 mt-6">
+              {highlights.map((h) => (
+                <li key={h} className="flex items-start gap-3">
+                  <CheckCircle size={18} className="text-dwt-500 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700 text-sm">{h}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex flex-wrap gap-4">
+              <Link href="/about" className="inline-flex items-center gap-2 px-6 py-3 bg-dwt-500 text-white font-semibold rounded-lg hover:bg-dwt-600 transition-all">
+                Read Our Full Story <ArrowRight size={16} />
+              </Link>
+              <Link href="/about/founder-message" className="inline-flex items-center gap-2 px-6 py-3 border border-dwt-200 text-dwt-600 font-semibold rounded-lg hover:bg-dwt-50 transition-all">
+                Founder's Message
+              </Link>
             </div>
-            <h3 className="font-heading font-bold text-xl mb-3">Our Vision</h3>
-            <p className="text-gray-600 leading-relaxed">
-              A society where every individual has equal access to education, healthcare,
-              and opportunities to thrive with dignity and hope.
-            </p>
           </div>
         </div>
       </div>

@@ -94,9 +94,28 @@ function DonateForm() {
     <PublicLayout>
       <PageHeader
         title="Make a Donation"
-        subtitle="Your contribution helps us continue our mission of serving humanity"
-        breadcrumb="Donate"
+        subtitle="Every rupee goes directly to orphan girls, ambulance fuel, Ramadan rations, or water wells"
+        breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Donate' }]}
+        image="/gallery/food-distribution.jpeg"
       />
+
+      <section className="py-8 bg-white border-b border-gray-100">
+        <div className="container-page max-w-3xl">
+          <div className="bg-dwt-50 border border-dwt-200 rounded-2xl p-6 mb-2">
+            <h3 className="font-heading font-bold text-dwt-800 text-lg mb-3">How to Transfer</h3>
+            <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-700">
+              <div>
+                <p className="font-semibold text-dwt-700 mb-1">Bank Transfer</p>
+                <p>Contact us at <a href="tel:03129700108" className="text-dwt-600 font-bold">03129700108</a> or email <a href="mailto:duraniwelfaretrust@gmail.com" className="text-dwt-600 font-bold">duraniwelfaretrust@gmail.com</a> to receive our bank account details.</p>
+              </div>
+              <div>
+                <p className="font-semibold text-dwt-700 mb-1">Cash / Cheque</p>
+                <p>Visit us at Konodas, Gilgit-Baltistan or arrange a pickup by calling <a href="tel:03129700108" className="text-dwt-600 font-bold">03129700108</a>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="section-padding bg-gray-50">
         <div className="container-page max-w-3xl">
@@ -107,7 +126,7 @@ function DonateForm() {
               </div>
               <div>
                 <h2 className="font-heading font-bold text-2xl">Donation Form</h2>
-                <p className="text-sm text-gray-600">All donations are tax-deductible</p>
+                <p className="text-sm text-gray-600">Sadqa Jariya — ongoing charity in service of the vulnerable</p>
               </div>
             </div>
 

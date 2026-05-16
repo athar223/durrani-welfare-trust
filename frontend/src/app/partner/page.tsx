@@ -36,7 +36,8 @@ export default function PartnerPage() {
       <PageHeader
         title="Partner With Us"
         subtitle="Together, we can amplify our impact and create lasting positive change"
-        breadcrumb="Get Involved"
+        breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Get Involved', href: '/volunteer' }, { label: 'Partner' }]}
+        image="/gallery/women-training.jpeg"
       />
 
       <section className="section-padding bg-white">
@@ -44,9 +45,9 @@ export default function PartnerPage() {
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="font-heading font-bold text-3xl mb-4">Why Partner With DWT?</h2>
             <p className="text-lg text-gray-600 leading-relaxed">
-              For over a decade, Durrani Welfare Trust has built a reputation for transparent operations,
-              measurable impact, and dedicated execution. Partnering with us means investing in proven
-              programs that change lives — backed by detailed reporting and accountability.
+              Since 2017, Durrani Welfare Trust has built a reputation for transparent operations,
+              measurable impact, and dedicated execution in Gilgit-Baltistan. Partnering with us means
+              investing in proven programmes that change lives — backed by detailed reporting and accountability.
             </p>
           </div>
 
@@ -74,15 +75,24 @@ export default function PartnerPage() {
             })}
           </div>
 
-          {/* Notable partners */}
+          {/* Accreditations */}
           <div className="text-center mb-12">
-            <h2 className="font-heading font-bold text-3xl mb-4">Our Trusted Partners</h2>
-            <p className="text-gray-600">Some of the institutions we have collaborated with over the years.</p>
+            <h2 className="font-heading font-bold text-3xl mb-4">Recognised & Accredited</h2>
+            <p className="text-gray-600">Durrani Welfare Trust has been recognised by leading organisations for our work.</p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-16">
-            {['Akhuwat Foundation', 'JS Bank CSR', 'Karachi Hospital', 'Lahore School System', 'PIA Welfare', 'Ufone Foundation'].map((p) => (
-              <div key={p} className="card p-4 flex items-center justify-center text-center min-h-[70px]">
-                <span className="text-xs sm:text-sm font-semibold text-gray-600">{p}</span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-16">
+            {[
+              { title: 'ISPR Pride of Pakistan Award', year: '2025', desc: 'Awarded by the Inter Services Public Relations for outstanding community welfare service.' },
+              { title: 'EVE Vision Award', year: '2026', desc: 'International recognition for social entrepreneurship and women empowerment by Ms. Aman Faraz Durrani.' },
+              { title: 'UNICEF Safe Families Certified', year: '2022', desc: 'Accredited under the UNICEF Safe Families Programme for our infant care and adoption services.' },
+            ].map((a) => (
+              <div key={a.title} className="card p-6 text-center">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-dwt-50 flex items-center justify-center">
+                  <CheckCircle size={24} className="text-dwt-500" />
+                </div>
+                <div className="text-xs text-dwt-500 font-bold mb-1">{a.year}</div>
+                <h3 className="font-heading font-bold text-base mb-2">{a.title}</h3>
+                <p className="text-xs text-gray-600 leading-relaxed">{a.desc}</p>
               </div>
             ))}
           </div>
@@ -98,7 +108,7 @@ export default function PartnerPage() {
               <Link href="/contact" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-dwt-800 font-bold rounded-lg hover:bg-dwt-50">
                 Contact Partnership Team <ArrowRight size={16} />
               </Link>
-              <a href="mailto:partnerships@duraniwelfaretrust.org" className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-dwt-800 transition-all">
+              <a href="mailto:duraniwelfaretrust@gmail.com" className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-dwt-800 transition-all">
                 Email Us Directly
               </a>
             </div>

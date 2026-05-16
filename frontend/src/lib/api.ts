@@ -57,6 +57,7 @@ export const publicApi = {
   getHeroBanners: () => api.get('/hero-banners/'),
   getAboutSections: () => api.get('/about-sections/'),
   getServices: () => api.get('/services/'),
+  getServiceBySlug: (slug: string) => api.get(`/services/${slug}/`),
   getNews: (params?: any) => api.get('/news/', { params }),
   getNewsBySlug: (slug: string) => api.get(`/news/${slug}/`),
   getGalleryAlbums: () => api.get('/gallery/'),

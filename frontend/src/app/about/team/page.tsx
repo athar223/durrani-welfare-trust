@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Mail, Linkedin, Phone, Award, Users, Briefcase } from 'lucide-react';
+import { Mail, Phone, Award, Shield, Star, Heart } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import PublicLayout from '@/components/PublicLayout';
 
@@ -11,249 +11,223 @@ interface Person {
   photo?: string;
   email?: string;
   phone?: string;
-  linkedin?: string;
-  category: 'leadership' | 'board' | 'department';
-  department?: string;
+  badges?: string[];
 }
 
-const team: Person[] = [
-  // Leadership
+const leadership: Person[] = [
   {
-    name: 'Mr. Waheed Faraz Durrani',
-    role: 'Chairman & Founder',
-    bio: 'Visionary social leader who founded the Durrani Welfare Trust to uplift underprivileged women and children through education, healthcare, and welfare initiatives across Pakistan.',
-    initials: 'WD',
-    photo: '/team/chairman.jpeg',
-    email: 'chairman@duraniwelfaretrust.org',
-    category: 'leadership',
+    name: 'Ms. Rawasia Waheed',
+    role: 'Chairperson',
+    bio: 'The heart behind Durrani Welfare Trust. Rawasia Waheed has dedicated her life to the cause of orphan girls and underprivileged families in Gilgit-Baltistan. The Rawasia Waheed HUB — our women empowerment centre — is named in her honour.',
+    initials: 'RW',
+    photo: '/team/chairperson.jpeg',
   },
   {
-    name: 'Mr. Aman Faraz Durrani',
-    role: 'Chief Executive Officer',
-    bio: 'Leads day-to-day operations of the Trust, drives strategic initiatives, and ensures every program delivers maximum impact to beneficiaries across the country.',
+    name: 'Ms. Aman Faraz Durrani',
+    role: 'CEO & Trustee',
+    bio: 'Took over the Trust at 19 years old and grew it into a nationally recognised welfare institution. Social entrepreneur, speaker, and humanitarian — awarded ISPR Pride of Pakistan 2025 and the International EVE Vision Award 2026.',
     initials: 'AD',
     photo: '/team/ceo.jpeg',
-    email: 'ceo@duraniwelfaretrust.org',
-    category: 'leadership',
-  },
-  {
-    name: 'Mrs. Aisha Iqbal',
-    role: 'Vice Chairperson',
-    bio: 'Leads the women empowerment and child welfare initiatives, focusing on education access for girls and skill development programs.',
-    initials: 'AI',
-    email: 'vicechair@duraniwelfaretrust.org',
-    category: 'leadership',
-  },
-
-  // Board members
-  {
-    name: 'Dr. Sara Ahmed',
-    role: 'Board Member — Healthcare',
-    bio: 'Senior physician with 20+ years of experience. Heads the medical committee and ambulance service oversight.',
-    initials: 'SA',
-    category: 'board',
-  },
-  {
-    name: 'Mr. Ali Raza',
-    role: 'Board Member — Finance',
-    bio: 'Chartered accountant ensuring financial transparency, audit compliance, and donor accountability.',
-    initials: 'AR',
-    category: 'board',
-  },
-  {
-    name: 'Prof. Imran Hussain',
-    role: 'Board Member — Education',
-    bio: 'Former university professor leading the educational scholarship and curriculum committee.',
-    initials: 'IH',
-    category: 'board',
-  },
-  {
-    name: 'Mr. Yasir Mahmood',
-    role: 'Board Member — Operations',
-    bio: 'Operations strategist responsible for community projects and field-level program implementation.',
-    initials: 'YM',
-    category: 'board',
-  },
-
-  // Department heads
-  {
-    name: 'Ms. Fatima Sheikh',
-    role: 'Head of Education Programs',
-    bio: 'Manages all student support programs, school partnerships, and scholarship distribution.',
-    initials: 'FS',
-    category: 'department',
-    department: 'Education',
-  },
-  {
-    name: 'Dr. Hassan Tariq',
-    role: 'Head of Medical Services',
-    bio: 'Coordinates medical camps, hospital partnerships, ambulance fleet, and emergency response.',
-    initials: 'HT',
-    category: 'department',
-    department: 'Healthcare',
-  },
-  {
-    name: 'Mr. Naveed Akhtar',
-    role: 'Head of Finance & Accounts',
-    bio: 'Oversees donations, expenses, payroll, and prepares quarterly financial reports for the board.',
-    initials: 'NA',
-    category: 'department',
-    department: 'Finance',
-  },
-  {
-    name: 'Ms. Hina Bukhari',
-    role: 'Head of Volunteer & Community',
-    bio: 'Recruits, trains, and manages volunteers; coordinates community outreach and donor relations.',
-    initials: 'HB',
-    category: 'department',
-    department: 'Volunteers',
-  },
-  {
-    name: 'Mr. Bilal Sajid',
-    role: 'Head of Operations',
-    bio: 'Manages logistics, vehicle fleet, daily operations, and field staff coordination.',
-    initials: 'BS',
-    category: 'department',
-    department: 'Operations',
+    phone: '03129700108',
+    badges: ['ISPR Pride of Pakistan 2025', 'EVE Vision Award 2026'],
   },
 ];
 
-function PersonCard({ p, large = false }: { p: Person; large?: boolean }) {
-  const size = large ? 'w-32 h-32 text-3xl' : 'w-24 h-24 text-2xl';
+const coreTeam: Person[] = [
+  {
+    name: 'Mr. Waheed Faraz Durrani',
+    role: 'Founder & Late Chairman',
+    bio: 'Founded Durrani Welfare Trust in 2017 in Konodas, Gilgit-Baltistan. Having lost his own parents at four months old, his lifelong dream was to ensure no child grows up without shelter, care, and affection. His legacy lives on in every life we touch.',
+    initials: 'WD',
+    photo: '/team/chairman.jpeg',
+  },
+  {
+    name: 'Mr. Tashfeen Rafiq',
+    role: 'Vice Chairman',
+    bio: 'Provides strategic leadership and operational oversight across all DWT programmes. Committed to expanding the Trust\'s reach in remote communities of Gilgit-Baltistan.',
+    initials: 'TR',
+    photo: '/team/vice-chairman.jpeg',
+  },
+  {
+    name: 'Mr. Zain ul Abdeen',
+    role: 'General Secretary',
+    bio: 'Manages Trust administration, stakeholder communications, and programme coordination. Ensures every initiative runs with clarity, transparency, and accountability.',
+    initials: 'ZA',
+    photo: '/team/general-secretary.jpeg',
+  },
+];
+
+function PersonCard({ p }: { p: Person }) {
   return (
-    <div className="card overflow-hidden text-center group hover:-translate-y-1 transition-transform duration-300">
-      <div className="bg-gradient-to-br from-dwt-700 to-dwt-500 py-8 relative">
-        {p.photo ? (
-          <img
-            src={p.photo}
-            alt={p.name}
-            className={`${size} mx-auto rounded-full object-cover shadow-card border-4 border-white/95`}
-          />
-        ) : (
-          <div className={`${size} mx-auto rounded-full bg-white/95 text-dwt-700 flex items-center justify-center font-heading font-bold shadow-card`}>
-            {p.initials}
+    <div className="bg-white rounded-2xl shadow-soft hover:shadow-card hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden">
+      {/* Photo header */}
+      <div className="bg-gradient-to-br from-dwt-700 to-dwt-500 pt-8 pb-6 px-4 text-center flex-shrink-0">
+        <div className="w-28 h-28 mx-auto rounded-full overflow-hidden border-4 border-white/90 shadow-card bg-white/20">
+          {p.photo ? (
+            <img
+              src={p.photo}
+              alt={p.name}
+              className="w-full h-full object-cover object-top"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center font-heading font-bold text-2xl text-white">
+              {p.initials}
+            </div>
+          )}
+        </div>
+        {p.badges && p.badges.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-1.5 mt-3">
+            {p.badges.map((b) => (
+              <span key={b} className="text-xs bg-white/20 border border-white/30 text-white px-2 py-0.5 rounded-full leading-tight">
+                {b}
+              </span>
+            ))}
           </div>
         )}
       </div>
-      <div className="p-5">
-        <h3 className={`font-heading font-bold ${large ? 'text-xl' : 'text-lg'} mb-1`}>{p.name}</h3>
+
+      {/* Content */}
+      <div className="p-5 text-center flex flex-col flex-1">
+        <h3 className="font-heading font-bold text-lg leading-snug mb-1">{p.name}</h3>
         <p className="text-dwt-600 font-semibold text-sm mb-3">{p.role}</p>
-        <p className="text-sm text-gray-600 leading-relaxed mb-4">{p.bio}</p>
-        <div className="flex justify-center gap-2 pt-3 border-t border-gray-100">
-          {p.email && (
-            <a href={`mailto:${p.email}`} className="w-8 h-8 rounded-full bg-dwt-50 text-dwt-600 hover:bg-dwt-500 hover:text-white flex items-center justify-center transition-all">
-              <Mail size={14} />
-            </a>
-          )}
-          {p.phone && (
-            <a href={`tel:${p.phone}`} className="w-8 h-8 rounded-full bg-dwt-50 text-dwt-600 hover:bg-dwt-500 hover:text-white flex items-center justify-center transition-all">
-              <Phone size={14} />
-            </a>
-          )}
-          {p.linkedin && (
-            <a href={p.linkedin} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-dwt-50 text-dwt-600 hover:bg-dwt-500 hover:text-white flex items-center justify-center transition-all">
-              <Linkedin size={14} />
-            </a>
-          )}
-        </div>
+        <p className="text-sm text-gray-600 leading-relaxed flex-1">{p.bio}</p>
+        {(p.email || p.phone) && (
+          <div className="flex justify-center gap-2 mt-4 pt-3 border-t border-gray-100">
+            {p.email && (
+              <a
+                href={`mailto:${p.email}`}
+                className="w-8 h-8 rounded-full bg-dwt-50 text-dwt-600 hover:bg-dwt-500 hover:text-white flex items-center justify-center transition-all"
+              >
+                <Mail size={14} />
+              </a>
+            )}
+            {p.phone && (
+              <a
+                href={`tel:${p.phone}`}
+                className="w-8 h-8 rounded-full bg-dwt-50 text-dwt-600 hover:bg-dwt-500 hover:text-white flex items-center justify-center transition-all"
+              >
+                <Phone size={14} />
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 export default function TeamPage() {
-  const leadership = team.filter((p) => p.category === 'leadership');
-  const board = team.filter((p) => p.category === 'board');
-  const departments = team.filter((p) => p.category === 'department');
-
   return (
     <PublicLayout>
       <PageHeader
         title="Leadership & Team"
-        subtitle="Meet the dedicated people leading Durrani Welfare Trust's mission of service to humanity"
-        breadcrumb="About"
+        subtitle="Meet the dedicated people guiding Durrani Welfare Trust's mission of service"
+        breadcrumb={[{ label: 'Home', href: '/' }, { label: 'About', href: '/about' }, { label: 'Our Team' }]}
+        image="/gallery/girls-certificates.jpeg"
       />
 
       {/* Leadership */}
       <section className="section-padding bg-white">
-        <div className="container-page">
-          <div className="text-center max-w-2xl mx-auto mb-12">
+        <div className="container-page max-w-4xl">
+          <div className="text-center mb-12">
             <span className="text-dwt-500 font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2">
-              <Award size={16} /> Executive Leadership
+              <Award size={16} /> Active Leadership
             </span>
-            <h2 className="font-heading font-bold text-3xl md:text-4xl mt-2 mb-4">
-              Our Leadership
-            </h2>
-            <p className="text-gray-600 leading-relaxed">
-              Visionary leaders guiding the Trust toward greater impact and accountability.
+            <h2 className="font-heading font-bold text-3xl md:text-4xl mt-2 mb-4">Our Leadership</h2>
+            <p className="text-gray-600 leading-relaxed max-w-2xl mx-auto">
+              The women and men leading Durrani Welfare Trust forward — with compassion, integrity, and relentless commitment to those we serve.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {leadership.map((p) => (
-              <PersonCard key={p.name} p={p} large />
-            ))}
+          <div className="grid sm:grid-cols-2 gap-6">
+            {leadership.map((p) => <PersonCard key={p.name} p={p} />)}
           </div>
         </div>
       </section>
 
-      {/* Board */}
+      {/* Pride of Pakistan Award Section */}
+      <section className="section-padding bg-dwt-800 text-white">
+        <div className="container-page max-w-5xl">
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-full text-sm font-semibold mb-5">
+                <Shield size={16} className="text-dwt-200" /> National Recognition
+              </div>
+              <h2 className="font-heading font-bold text-3xl md:text-4xl mb-4 leading-snug">
+                ISPR Pride of Pakistan Award
+              </h2>
+              <p className="text-gray-300 leading-relaxed mb-4">
+                On the occasion of Pakistan's 78th Independence Day (Operation Marka-e-Haq),
+                Ms. Aman Faraz Durrani was honoured with the prestigious <strong className="text-white">ISPR Pride of Pakistan Award</strong> for
+                outstanding service to orphan girls and underprivileged families in Gilgit-Baltistan.
+              </p>
+              <p className="text-gray-300 leading-relaxed mb-6">
+                This recognition by the Inter Services Public Relations reflects the Trust's commitment
+                to welfare work that touches the lives of thousands across the region.
+              </p>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { icon: Shield, label: 'ISPR', sub: 'Pride of Pakistan 2025' },
+                  { icon: Star,   label: 'EVE Vision', sub: 'International Award 2026' },
+                  { icon: Award,  label: 'UNICEF', sub: 'Safe Families Certified' },
+                ].map((a) => {
+                  const Icon = a.icon;
+                  return (
+                    <div key={a.label} className="bg-white/10 border border-white/10 rounded-xl p-3 text-center">
+                      <Icon size={18} className="text-dwt-200 mx-auto mb-1.5" />
+                      <div className="text-xs font-bold text-white">{a.label}</div>
+                      <div className="text-xs text-gray-400 mt-0.5 leading-tight">{a.sub}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="relative">
+              <img
+                src="/team/pride-of-pakistan-award.jpeg"
+                alt="ISPR Pride of Pakistan Award - Aman Faraz Durrani"
+                className="rounded-2xl shadow-card w-full object-cover max-h-80"
+              />
+              <div className="absolute bottom-4 left-4 right-4 bg-dwt-900/80 backdrop-blur rounded-xl p-3 text-center text-sm">
+                <div className="font-semibold text-white">78th Independence Day Ceremony</div>
+                <div className="text-dwt-200 text-xs mt-0.5">Operation Marka-e-Haq — August 2025</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Core Team */}
       <section className="section-padding bg-gray-50">
-        <div className="container-page">
-          <div className="text-center max-w-2xl mx-auto mb-12">
+        <div className="container-page max-w-5xl">
+          <div className="text-center mb-12">
             <span className="text-dwt-500 font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2">
-              <Briefcase size={16} /> Governance
+              <Heart size={16} /> Founding & Core Team
             </span>
-            <h2 className="font-heading font-bold text-3xl md:text-4xl mt-2 mb-4">
-              Board of Directors
-            </h2>
-            <p className="text-gray-600 leading-relaxed">
-              Our independent board provides strategic oversight and ensures the Trust upholds the highest standards of governance and transparency.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {board.map((p) => (
-              <PersonCard key={p.name} p={p} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Department heads */}
-      <section className="section-padding bg-white">
-        <div className="container-page">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-dwt-500 font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2">
-              <Users size={16} /> Department Heads
-            </span>
-            <h2 className="font-heading font-bold text-3xl md:text-4xl mt-2 mb-4">
-              Operational Leadership
-            </h2>
-            <p className="text-gray-600 leading-relaxed">
-              Experienced professionals managing day-to-day operations across our welfare programs.
+            <h2 className="font-heading font-bold text-3xl md:text-4xl mt-2 mb-4">Core Team</h2>
+            <p className="text-gray-600 leading-relaxed max-w-2xl mx-auto">
+              The founder whose dream started it all, and the dedicated leaders carrying that dream forward every day.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {departments.map((p) => (
-              <PersonCard key={p.name} p={p} />
-            ))}
+            {coreTeam.map((p) => <PersonCard key={p.name} p={p} />)}
           </div>
         </div>
       </section>
 
-      {/* Join us CTA */}
-      <section className="py-16 bg-gradient-to-r from-dwt-700 to-dwt-500 text-white">
+      {/* CTA */}
+      <section className="py-16 bg-gradient-to-r from-dwt-800 to-dwt-600 text-white">
         <div className="container-page text-center">
-          <h2 className="font-heading font-bold text-3xl mb-4">Join Our Team</h2>
-          <p className="text-lg max-w-2xl mx-auto mb-6 text-gray-100">
-            We are always looking for passionate individuals who want to make a difference.
-            Apply to become a volunteer or check our career openings.
+          <h2 className="font-heading font-bold text-3xl mb-4">Join Our Mission</h2>
+          <p className="text-lg max-w-2xl mx-auto mb-6 text-gray-200">
+            We are always looking for passionate individuals who want to make a difference in Gilgit-Baltistan.
+            Apply to volunteer or reach out to us directly.
           </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/volunteer" className="px-6 py-3 bg-white text-dwt-800 font-bold rounded-lg hover:bg-dwt-50">
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link href="/volunteer" className="px-6 py-3 bg-white text-dwt-800 font-bold rounded-lg hover:bg-dwt-50 transition-all">
               Become a Volunteer
             </Link>
             <Link href="/contact" className="px-6 py-3 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-dwt-800 transition-all">
-              Contact HR
+              Contact Us
             </Link>
           </div>
         </div>

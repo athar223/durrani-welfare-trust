@@ -1,17 +1,33 @@
 import type { Metadata } from 'next';
-import { Toaster } from 'react-hot-toast';
 import './globals.css';
+import { Toaster } from 'react-hot-toast';
+import { Libre_Baskerville, Lato } from 'next/font/google';
+
+const libreBaskerville = Libre_Baskerville({
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  variable: '--font-heading',
+  display: 'swap',
+});
+
+const lato = Lato({
+  weight: ['300', '400', '700', '900'],
+  subsets: ['latin'],
+  variable: '--font-body',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: 'Durrani Welfare Trust - Serving Humanity with Compassion',
-  description: 'A non-profit organization dedicated to education, healthcare, and community development programs.',
-  keywords: 'NGO, Pakistan, welfare, education, healthcare, donations, volunteer, charity',
+  title: 'Durrani Welfare Trust - Be-Saharon Ka Sahara',
+  description: 'Registered NGO in Gilgit-Baltistan sheltering 50+ orphan girls, running free ambulance services, empowering women, and serving thousands of families since 2017.',
+  keywords: 'NGO, Pakistan, Gilgit-Baltistan, welfare, orphan girls, ambulance, women empowerment, donations, volunteer, charity, Durrani Welfare Trust',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-white text-gray-900 antialiased">
+      <body className={`${libreBaskerville.variable} ${lato.variable} bg-white text-gray-900 antialiased`}>
         <Toaster
           position="top-right"
           toastOptions={{

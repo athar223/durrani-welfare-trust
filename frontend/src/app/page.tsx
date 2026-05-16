@@ -1,13 +1,15 @@
 import HeroSection from '@/components/sections/HeroSection';
 import AboutSection from '@/components/sections/AboutSection';
-import ServicesSection from '@/components/sections/ServicesSection';
 import StatsSection from '@/components/sections/StatsSection';
+import ServicesSection from '@/components/sections/ServicesSection';
 import CampaignsSection from '@/components/sections/CampaignsSection';
+import GalleryPreviewSection from '@/components/sections/GalleryPreviewSection';
+import AwardsSection from '@/components/sections/AwardsSection';
+import TestimonialsSection from '@/components/sections/TestimonialsSection';
+import LeadershipPreviewSection from '@/components/sections/LeadershipPreviewSection';
 import NewsSection from '@/components/sections/NewsSection';
 import GetInvolvedSection from '@/components/sections/GetInvolvedSection';
 import CTASection from '@/components/sections/CTASection';
-import TestimonialsSection from '@/components/sections/TestimonialsSection';
-import LeadershipPreviewSection from '@/components/sections/LeadershipPreviewSection';
 import PublicLayout from '@/components/PublicLayout';
 
 export default function HomePage() {
@@ -18,10 +20,12 @@ export default function HomePage() {
       <StatsSection />
       <ServicesSection />
       <CampaignsSection />
-      <GetInvolvedSection />
+      <GalleryPreviewSection />
+      <AwardsSection />
       <TestimonialsSection />
       <LeadershipPreviewSection />
       <NewsSection />
+      <GetInvolvedSection />
       <CTASection />
     </PublicLayout>
   );

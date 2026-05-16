@@ -1,50 +1,124 @@
+'use client';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { GraduationCap, Heart, Truck, Users, HandHeart, Stethoscope, BookOpen, ShieldCheck, ArrowRight } from 'lucide-react';
+import {
+  Home, Baby, GraduationCap, Truck, Users, Droplets, Heart,
+  Gift, TreePine, Mic, HandHeart, HelpCircle, ArrowRight,
+} from 'lucide-react';
+import { publicApi } from '@/lib/api';
 
-const services = [
-  { icon: GraduationCap, title: 'Education Support', desc: 'Free education, books, and learning materials for underprivileged children.' },
-  { icon: BookOpen, title: 'Student Scholarships', desc: 'Merit and need-based scholarships for talented students.' },
-  { icon: Truck, title: 'Ambulance Services', desc: 'Free emergency ambulance services for the community.' },
-  { icon: Users, title: 'Community Projects', desc: 'Sustainable development projects benefiting local communities.' },
-  { icon: Heart, title: 'Donations & Welfare', desc: 'Distribution of essentials, food, and financial support to those in need.' },
-  { icon: Stethoscope, title: 'Medical Support', desc: 'Healthcare services, medical camps, and treatment assistance.' },
-  { icon: HandHeart, title: 'Volunteer Programs', desc: 'Engage with our cause and contribute your time and skills.' },
-  { icon: ShieldCheck, title: 'Disaster Relief', desc: 'Emergency relief and rehabilitation during natural calamities.' },
+interface Service {
+  id: number;
+  title: string;
+  slug: string;
+  short_description: string;
+  icon: string;
+  is_featured: boolean;
+}
+
+const ICON_MAP: Record<string, React.ComponentType<{ size?: number }>> = {
+  home: Home, baby: Baby, 'graduation-cap': GraduationCap, ambulance: Truck,
+  users: Users, droplets: Droplets, heart: Heart, gift: Gift,
+  tree: TreePine, 'tree-pine': TreePine, mic: Mic, volunteer: HandHeart,
+};
+
+const PROGRAM_IMAGES: Record<string, string> = {
+  'orphanage-for-girls':       '/gallery/orphanage-girls.jpeg',
+  'infant-care-adoption':      '/gallery/infant-care.jpeg',
+  'education-programmes':      '/gallery/madrasa-building.jpeg',
+  'ambulance-services':        '/gallery/ambulance-fleet.jpeg',
+  'women-empowerment':         '/gallery/women-training.jpeg',
+  'clean-water-infrastructure':'/gallery/dwt-ambulance.jpeg',
+  'food-distribution':         '/gallery/food-distribution.jpeg',
+  'marriage-support':          '/gallery/marriage-support.jpeg',
+  'plantation-drive':          '/gallery/girls-certificates.jpeg',
+  'seminars-youth-empowerment':'/gallery/eve-vision-award.jpeg',
+};
+
+const STATIC_SERVICES: Service[] = [
+  { id: 1, slug: 'orphanage-for-girls',        title: 'Orphanage for Girls',       short_description: 'Safe home for 50+ orphan girls with shelter, education, and healthcare in Gilgit-Baltistan.',         icon: 'home',            is_featured: true },
+  { id: 2, slug: 'ambulance-services',          title: 'Free Ambulance Services',   short_description: '24/7 free emergency ambulance — over 5,000 patients served across Gilgit-Baltistan.',               icon: 'ambulance',       is_featured: true },
+  { id: 3, slug: 'women-empowerment',           title: 'Women Empowerment',         short_description: 'Rawasia Waheed HUB — sewing, embroidery, and vocational training for financial independence.',        icon: 'users',           is_featured: true },
+  { id: 4, slug: 'education-programmes',        title: 'Education Programmes',      short_description: 'Madrasa Fatima lil Banat providing quality Islamic and academic education to orphan girls.',           icon: 'graduation-cap',  is_featured: true },
+  { id: 5, slug: 'food-distribution',           title: 'Food & Rations',            short_description: 'Annual Ramadan rations, Eid clothing, and emergency food packages for 3,000+ families.',              icon: 'heart',           is_featured: false },
+  { id: 6, slug: 'clean-water-infrastructure',  title: 'Clean Water Wells',         short_description: 'Building water wells in remote Gilgit-Baltistan communities as Sadqa Jaria.',                         icon: 'droplets',        is_featured: false },
 ];
 
 export default function ServicesSection() {
+  const [services, setServices] = useState<Service[]>(STATIC_SERVICES);
+
+  useEffect(() => {
+    publicApi
+      .getServices()
+      .then((res) => {
+        const data: Service[] = res.data.results ?? res.data;
+        if (data.length > 0) setServices(data);
+      })
+      .catch(() => {});
+  }, []);
+
+  const featured = services.filter((s) => s.is_featured);
+  const display = featured.length >= 4 ? featured.slice(0, 6) : services.slice(0, 6);
+
   return (
-    <section id="services" className="section-padding bg-white">
+    <section id="services" className="section-padding bg-gray-50">
       <div className="container-page">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <span className="text-dwt-500 font-bold text-sm uppercase tracking-wider">What We Do</span>
-          <h2 className="font-heading font-bold text-3xl md:text-4xl mt-2 mb-4">
-            Our Services
-          </h2>
+          <h2 className="font-heading font-bold text-3xl md:text-4xl mt-2 mb-4">Our Programmes</h2>
           <p className="text-gray-600 leading-relaxed text-lg">
-            We offer a wide range of welfare services designed to address the most pressing needs
-            of our communities.
+            From sheltering orphan girls to free ambulances and women empowerment —
+            serving the most vulnerable across Gilgit-Baltistan since 2017.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service) => {
-            const Icon = service.icon;
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {display.map((service) => {
+            const Icon = ICON_MAP[service.icon] ?? HelpCircle;
+            const photo = PROGRAM_IMAGES[service.slug];
             return (
-              <div key={service.title} className="card p-6 group hover:-translate-y-1 transition-transform duration-300">
-                <div className="w-14 h-14 rounded-xl bg-dwt-50 flex items-center justify-center text-dwt-500 mb-4 group-hover:bg-dwt-500 group-hover:text-white transition-all">
-                  <Icon size={28} />
+              <Link
+                key={service.id}
+                href={`/services/${service.slug}`}
+                className="bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-card hover:-translate-y-1 transition-all duration-300 group block"
+              >
+                {/* Photo */}
+                <div className="relative h-48 bg-dwt-50 overflow-hidden">
+                  {photo ? (
+                    <img src={photo} alt={service.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-dwt-50 to-dwt-100 flex items-center justify-center">
+                      <Icon size={52} className="text-dwt-300" />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-dwt-900/60 to-transparent" />
+                  <div className="absolute bottom-3 left-4">
+                    <div className="w-10 h-10 rounded-xl bg-white/90 flex items-center justify-center text-dwt-600">
+                      <Icon size={20} />
+                    </div>
+                  </div>
                 </div>
-                <h3 className="font-heading font-bold text-lg mb-2">{service.title}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">{service.desc}</p>
-              </div>
+
+                {/* Content */}
+                <div className="p-5">
+                  <h3 className="font-heading font-bold text-lg mb-2 group-hover:text-dwt-600 transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-3">
+                    {service.short_description}
+                  </p>
+                  <span className="inline-flex items-center gap-1 text-dwt-500 text-sm font-semibold">
+                    Learn More <ArrowRight size={14} />
+                  </span>
+                </div>
+              </Link>
             );
           })}
         </div>
 
         <div className="text-center mt-10">
-          <Link href="/services" className="btn-primary">
-            View All Services <ArrowRight size={18} className="ml-2" />
+          <Link href="/services" className="inline-flex items-center gap-2 px-7 py-3.5 bg-dwt-500 text-white font-semibold rounded-lg hover:bg-dwt-600 transition-all shadow-soft">
+            View All Programmes <ArrowRight size={18} />
           </Link>
         </div>
       </div>

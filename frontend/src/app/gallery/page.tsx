@@ -39,8 +39,9 @@ export default function GalleryPage() {
     <PublicLayout>
       <PageHeader
         title="Photo Gallery"
-        subtitle="Glimpses of our welfare activities, events, and community programs"
-        breadcrumb="Media"
+        subtitle="Glimpses of our welfare activities, events, and community programmes across Gilgit-Baltistan"
+        breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Gallery' }]}
+        image="/gallery/girls-certificates.jpeg"
       />
 
       <section className="section-padding bg-gray-50">

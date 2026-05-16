@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Menu, X, Heart, LogIn, ChevronDown, Phone, Mail } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -40,7 +40,7 @@ const nav: NavLink[] = [
     children: [
       { label: 'Donate Now', href: '/donate', desc: 'Support our mission financially' },
       { label: 'Become a Volunteer', href: '/volunteer', desc: 'Give your time and skills' },
-      { label: 'Sponsor a Student', href: '/sponsor', desc: 'Educate a child for a year' },
+      { label: 'Sponsor an Orphan Girl', href: '/sponsor', desc: 'Give a girl shelter, care, and education' },
       { label: 'Student Enrollment', href: '/enroll', desc: 'Apply for educational support' },
       { label: 'Partner With Us', href: '/partner', desc: 'Corporate & institutional partnerships' },
     ],
@@ -60,6 +60,15 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function openMenu(label: string) {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setOpenDropdown(label);
+  }
+  function scheduleClose() {
+    closeTimer.current = setTimeout(() => setOpenDropdown(null), 120);
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-soft">
@@ -67,11 +76,11 @@ export default function Header() {
       <div className="hidden md:block bg-dwt-800 text-white text-xs">
         <div className="container-page flex items-center justify-between h-9">
           <div className="flex items-center gap-5">
+            <a href="tel:03129700108" className="flex items-center gap-1.5 hover:text-dwt-200">
+              <Phone size={12} /> 03129700108
+            </a>
             <span className="flex items-center gap-1.5">
-              <Phone size={12} /> +92 300 1234567
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Mail size={12} /> info@duraniwelfaretrust.org
+              <Mail size={12} /> duraniwelfaretrust@gmail.com
             </span>
           </div>
           <div className="flex items-center gap-4">
@@ -113,8 +122,8 @@ export default function Header() {
                 <div
                   key={item.label}
                   className="relative"
-                  onMouseEnter={() => setOpenDropdown(item.label)}
-                  onMouseLeave={() => setOpenDropdown(null)}
+                  onMouseEnter={() => openMenu(item.label)}
+                  onMouseLeave={scheduleClose}
                 >
                   <button className="flex items-center gap-1 px-4 py-2 text-sm font-semibold text-gray-700 hover:text-dwt-500 hover:bg-dwt-50 rounded-lg transition-all">
                     {item.label}

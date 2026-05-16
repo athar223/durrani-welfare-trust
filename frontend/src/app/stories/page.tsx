@@ -5,52 +5,52 @@ import PublicLayout from '@/components/PublicLayout';
 
 const stories = [
   {
-    name: 'Ayesha\'s Story',
-    role: 'Scholarship Recipient',
-    initials: 'A',
-    program: 'Education Support',
-    quote: 'I lost my father at the age of 8. My mother could not afford school fees. DWT sponsored my entire education from primary to college. Today, I am pursuing my bachelor\'s degree in computer science. None of this would have been possible without their support.',
+    name: 'Zainab\'s Story',
+    role: 'Orphan Girl, DWT Care',
+    initials: 'Z',
+    program: 'Orphan Care',
+    quote: 'I came to Durrani Welfare Trust when I was very small, after losing both parents. They did not just give me a room — they gave me a family. I go to school every day, I have friends here, and Aman Aapi makes sure we feel loved. I want to become a doctor one day.',
     color: 'from-rose-400 to-rose-600',
   },
   {
-    name: 'Hassan\'s Story',
-    role: 'Medical Camp Beneficiary',
-    initials: 'H',
-    program: 'Healthcare',
-    quote: 'My elderly mother needed urgent eye surgery but we could not afford it. The DWT team enrolled her in their free medical camp where renowned ophthalmologists performed her surgery completely free of cost. Today, she can see again. Allah bless this organization.',
-    color: 'from-blue-400 to-blue-600',
-  },
-  {
-    name: 'Fatima\'s Story',
-    role: 'Women Empowerment Graduate',
-    initials: 'F',
-    program: 'Skills Development',
-    quote: 'I was a widow with three children, no source of income, and very few options. DWT enrolled me in their tailoring program. I learned a skill that now allows me to support my family with dignity. I am no longer dependent on anyone.',
+    name: 'Nasreen\'s Story',
+    role: 'Rawasia Waheed HUB Graduate',
+    initials: 'N',
+    program: 'Women Empowerment',
+    quote: 'I was a widow with two daughters and no income. The Rawasia Waheed HUB taught me sewing and embroidery. Within months, I was taking orders from neighbours. Today I run my own small tailoring business from home. I am no longer dependent on anyone. DWT gave me my dignity back.',
     color: 'from-purple-400 to-purple-600',
   },
   {
-    name: 'Imran\'s Story',
-    role: 'Ambulance Service User',
-    initials: 'I',
-    program: 'Ambulance Service',
-    quote: 'My father had a heart attack at 2 AM. We did not own a car and no taxi was available. DWT\'s free ambulance reached us within 20 minutes and rushed him to the hospital. The doctors said any further delay would have been fatal. They saved his life.',
+    name: 'Muhammad Ali\'s Story',
+    role: 'Ambulance Service Beneficiary',
+    initials: 'M',
+    program: 'Free Ambulance Service',
+    quote: 'My mother collapsed at 3 AM. We are in a remote village and have no car. I called DWT\'s ambulance helpline and they came within 25 minutes. At the hospital, the doctor said another hour would have been too late. Their ambulance service saved my mother\'s life. May Allah reward them.',
     color: 'from-green-400 to-green-600',
   },
   {
-    name: 'Sara\'s Story',
-    role: 'Flood Relief Beneficiary',
-    initials: 'S',
-    program: 'Disaster Relief',
-    quote: 'Our village was destroyed in the 2022 floods. We lost everything — our home, our cattle, our crops. DWT was among the first to reach us. They provided shelter, food, clean water, and helped us rebuild our home. We will never forget their kindness.',
+    name: 'Hina\'s Story',
+    role: 'Ramadan Relief Beneficiary',
+    initials: 'H',
+    program: 'Ramadan Rations',
+    quote: 'My husband lost his job and we had four children to feed. During Ramadan, DWT arrived with a full ration bag — flour, rice, oil, lentils, sugar. I cried with gratitude. They also gave the children Eid clothes. They did not make us feel like beggars. They treated us with honour.',
     color: 'from-amber-400 to-amber-600',
   },
   {
-    name: 'Bilal\'s Story',
-    role: 'Orphan Care Beneficiary',
-    initials: 'B',
-    program: 'Orphan Support',
-    quote: 'After my parents passed away, I had no one. DWT did not just provide me food and clothing — they gave me a family. They paid for my education, mentored me, and now I work as a volunteer with the same Trust that raised me. I want to give back what was given to me.',
+    name: 'Ruqaiya\'s Story',
+    role: 'Orphan Girl, Education Programme',
+    initials: 'R',
+    program: 'Madrasa Fatima Education',
+    quote: 'Before DWT, I had never been inside a classroom. Now I attend Madrasa Fatima lil Banat every day. I have learned to read, write, and memorise Quran. My teachers are kind and patient. When I grow up, I want to teach other girls just like me.',
     color: 'from-teal-400 to-teal-600',
+  },
+  {
+    name: 'Bibi Fatima\'s Story',
+    role: 'Safe Families Programme',
+    initials: 'B',
+    program: 'Safe Families (UNICEF)',
+    quote: 'After my husband passed, I could not care for my newborn alone. DWT\'s Safe Families team supported me with nutrition, counselling, and connecting me to a foster family during the hardest weeks. They did not abandon me. Because of them, my baby and I are safe and together.',
+    color: 'from-blue-400 to-blue-600',
   },
 ];
 
@@ -60,7 +60,8 @@ export default function StoriesPage() {
       <PageHeader
         title="Stories of Impact"
         subtitle="Real lives transformed by the support of generous donors and dedicated volunteers"
-        breadcrumb="Media"
+        breadcrumb={[{ label: 'Home', href: '/' }, { label: 'Media', href: '/gallery' }, { label: 'Stories' }]}
+        image="/gallery/girls-certificates.jpeg"
       />
 
       <section className="section-padding bg-white">
