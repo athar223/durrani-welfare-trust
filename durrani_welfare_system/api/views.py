@@ -25,6 +25,7 @@ from durrani_welfare_system.cms.models import (
     NewsPost, GalleryAlbum, DonationCampaign,
     ContactMessage, NewsletterSubscriber,
     StudentApplication, VolunteerApplication, PublicDonation,
+    TeamMember, Testimonial, Statistic, Award,
 )
 
 from . import serializers as s
@@ -111,6 +112,34 @@ class DonationCampaignViewSet(viewsets.ModelViewSet):
     serializer_class = s.DonationCampaignSerializer
     permission_classes = [ReadOnlyOrAdmin]
     lookup_field = 'slug'
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+
+class TeamMemberViewSet(viewsets.ModelViewSet):
+    queryset = TeamMember.objects.filter(is_active=True)
+    serializer_class = s.TeamMemberSerializer
+    permission_classes = [ReadOnlyOrAdmin]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+    filterset_fields = ['category']
+
+
+class TestimonialViewSet(viewsets.ModelViewSet):
+    queryset = Testimonial.objects.filter(is_active=True)
+    serializer_class = s.TestimonialSerializer
+    permission_classes = [ReadOnlyOrAdmin]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+
+class StatisticViewSet(viewsets.ModelViewSet):
+    queryset = Statistic.objects.filter(is_active=True)
+    serializer_class = s.StatisticSerializer
+    permission_classes = [ReadOnlyOrAdmin]
+
+
+class AwardViewSet(viewsets.ModelViewSet):
+    queryset = Award.objects.filter(is_active=True)
+    serializer_class = s.AwardSerializer
+    permission_classes = [ReadOnlyOrAdmin]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
 

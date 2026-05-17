@@ -71,6 +71,8 @@ class AboutSection(models.Model):
         ('vision', 'Our Vision'),
         ('values', 'Core Values'),
         ('history', 'Our History'),
+        ('founder_message', "Founder's Message"),
+        ('ceo_message', "CEO's Message"),
     ]
     section = models.CharField(max_length=20, choices=SECTION_CHOICES, unique=True)
     title = models.CharField(max_length=200)
@@ -309,6 +311,83 @@ class VolunteerApplication(models.Model):
 
     def __str__(self):
         return f'{self.full_name} ({self.get_status_display()})'
+
+
+class TeamMember(models.Model):
+    """Team members shown on the public website."""
+    CATEGORY_CHOICES = [
+        ('leadership', 'Leadership'),
+        ('core', 'Core Team'),
+        ('advisor', 'Advisors'),
+    ]
+    name = models.CharField(max_length=200)
+    role = models.CharField(max_length=200)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='core')
+    bio = models.TextField(blank=True)
+    photo = models.ImageField(upload_to='cms/team/', blank=True, null=True)
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=30, blank=True)
+    badges = models.JSONField(default=list, blank=True, help_text='List of badge strings, e.g. ["ISPR Award 2025"]')
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'name']
+        verbose_name = 'Team Member'
+
+    def __str__(self):
+        return f'{self.name} ({self.role})'
+
+
+class Testimonial(models.Model):
+    """Testimonials / impact quotes shown on the website."""
+    name = models.CharField(max_length=200)
+    quote = models.TextField()
+    role = models.CharField(max_length=200, blank=True, help_text='e.g. Orphan Girl, Volunteer, Donor')
+    photo = models.ImageField(upload_to='cms/testimonials/', blank=True, null=True)
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', '-created_at']
+
+    def __str__(self):
+        return f'{self.name}: {self.quote[:60]}'
+
+
+class Statistic(models.Model):
+    """Impact statistics shown on hero / homepage (e.g. 50+ Orphan Girls)."""
+    value = models.CharField(max_length=50, help_text='Display value, e.g. "50+" or "3,000+"')
+    label = models.CharField(max_length=200, help_text='Short label, e.g. "Orphan Girls in Our Care"')
+    icon = models.CharField(max_length=50, blank=True, help_text='Lucide icon name, e.g. "heart"')
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = 'Statistic'
+
+    def __str__(self):
+        return f'{self.value} — {self.label}'
+
+
+class Award(models.Model):
+    """Awards and recognitions for the organisation."""
+    title = models.CharField(max_length=200)
+    organization = models.CharField(max_length=200, blank=True)
+    year = models.CharField(max_length=10, blank=True, help_text='e.g. 2025')
+    description = models.TextField(blank=True)
+    image = models.ImageField(upload_to='cms/awards/', blank=True, null=True)
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['order', '-year']
+
+    def __str__(self):
+        return f'{self.title} ({self.year})'
 
 
 class PublicDonation(models.Model):

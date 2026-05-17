@@ -24,7 +24,7 @@ export default function HeroSection() {
               Serving Gilgit-Baltistan Since 2017
             </div>
 
-            <h1 className="font-heading font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
+            <h1 className="font-heading font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
               <span className="text-white">Be-Saharon</span><br />
               <span className="text-white">Ka </span>
               <span className="text-dwt-200">Sahara</span>
@@ -38,7 +38,7 @@ export default function HeroSection() {
               "The support of the unsupported" — Durrani Welfare Trust
             </p>
 
-            <div className="flex flex-wrap gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-8">
               <Link href="/donate" className="inline-flex items-center gap-2 px-7 py-4 bg-white text-dwt-800 font-bold rounded-lg shadow-card hover:bg-dwt-50 transition-all text-base">
                 <Heart size={20} /> Donate Now
               </Link>

@@ -24,14 +24,9 @@ interface NewsPost {
   published_at: string;
 }
 
-const STATIC_NEWS: NewsPost[] = [
-  { id: 1, slug: 'pride-of-pakistan-award-ispr-2025', title: 'DWT CEO Receives ISPR Pride of Pakistan Award 2025',    category: 'news',         category_display: 'News',         summary: 'Ms. Aman Faraz Durrani was honoured with the prestigious ISPR Pride of Pakistan Award for outstanding welfare service to orphan girls and families in Gilgit-Baltistan.', cover_image: null, author: 'DWT Communications', published_at: '2025-08-14' },
-  { id: 2, slug: 'eve-vision-award-2026',              title: 'International EVE Vision Award 2026',                   category: 'news',         category_display: 'News',         summary: 'Durrani Welfare Trust CEO Ms. Aman Faraz Durrani received the International EVE Vision Award for excellence in social entrepreneurship and women empowerment.',            cover_image: null, author: 'DWT Communications', published_at: '2026-01-15' },
-  { id: 3, slug: 'ramadan-ration-distribution',        title: 'Ramadan 2025 Ration Drive Reaches 3,000+ Families',    category: 'announcement', category_display: 'Announcement', summary: 'Durrani Welfare Trust distributed Ramadan food packages to over 3,000 families across Gilgit-Baltistan. Distribution teams reached remote villages in the region.',      cover_image: null, author: 'DWT Field Team',     published_at: '2025-04-10' },
-];
-
 export default function NewsSection() {
-  const [posts, setPosts] = useState<NewsPost[]>(STATIC_NEWS);
+  const [posts, setPosts] = useState<NewsPost[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     publicApi
@@ -40,7 +35,8 @@ export default function NewsSection() {
         const data = res.data.results || res.data;
         if (data.length > 0) setPosts(data.slice(0, 3));
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -58,6 +54,25 @@ export default function NewsSection() {
           </Link>
         </div>
 
+        {loading ? (
+          <div className="grid md:grid-cols-3 gap-6">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-soft animate-pulse">
+                <div className="h-48 bg-gray-200" />
+                <div className="p-6 space-y-3">
+                  <div className="flex gap-2">
+                    <div className="h-5 bg-gray-200 rounded-full w-20" />
+                    <div className="h-5 bg-gray-100 rounded w-24" />
+                  </div>
+                  <div className="h-5 bg-gray-200 rounded w-3/4" />
+                  <div className="h-3 bg-gray-100 rounded w-full" />
+                  <div className="h-3 bg-gray-100 rounded w-4/5" />
+                  <div className="h-4 bg-gray-200 rounded w-24 mt-2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
         <div className="grid md:grid-cols-3 gap-6">
           {posts.map((post) => {
             const imgSrc = post.cover_image ? mediaUrl(post.cover_image) : (NEWS_FALLBACK[post.slug] ?? null);
@@ -65,7 +80,7 @@ export default function NewsSection() {
               <article key={post.id} className="bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-card hover:-translate-y-1 transition-all duration-300 group">
                 <div className="h-48 bg-gray-100 overflow-hidden">
                   {imgSrc ? (
-                    <img src={imgSrc} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img src={imgSrc} alt={post.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   ) : (
                     <div className="w-full h-full bg-dwt-50 flex items-center justify-center">
                       <Newspaper size={36} className="text-dwt-300" />
@@ -94,6 +109,7 @@ export default function NewsSection() {
             );
           })}
         </div>
+        )}
       </div>
     </section>
   );

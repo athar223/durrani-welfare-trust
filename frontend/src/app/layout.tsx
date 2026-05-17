@@ -27,6 +27,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preload" href="/hero/banner.jpeg" as="image" fetchPriority="high" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
       <body className={`${libreBaskerville.variable} ${lato.variable} bg-white text-gray-900 antialiased`}>
         <Toaster
           position="top-right"

@@ -55,6 +55,7 @@ export default function GetInvolvedSection() {
                 <img
                   src={card.image}
                   alt={card.title}
+                  loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 {/* Overlay */}

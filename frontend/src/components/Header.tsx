@@ -105,6 +105,7 @@ export default function Header() {
             <img
               src="/logo.jpeg"
               alt="Durrani Welfare Trust"
+              fetchPriority="high"
               className="w-14 h-14 rounded-full object-cover shadow-soft"
             />
             <div>

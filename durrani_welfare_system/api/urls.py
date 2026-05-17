@@ -16,6 +16,11 @@ router.register(r'gallery', views.GalleryAlbumViewSet, basename='gallery')
 router.register(r'campaigns', views.DonationCampaignViewSet, basename='campaign')
 router.register(r'contact-messages', views.ContactMessageViewSet, basename='contact-message')
 
+router.register(r'team-members', views.TeamMemberViewSet, basename='team-member')
+router.register(r'testimonials', views.TestimonialViewSet, basename='testimonial')
+router.register(r'statistics', views.StatisticViewSet, basename='statistic')
+router.register(r'awards', views.AwardViewSet, basename='award')
+
 # Public submissions
 router.register(r'student-applications', views.StudentApplicationViewSet, basename='student-application')
 router.register(r'volunteer-applications', views.VolunteerApplicationViewSet, basename='volunteer-application')

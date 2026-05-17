@@ -44,6 +44,7 @@ export default function LeadershipPreviewSection() {
                   <img
                     src={l.photo}
                     alt={l.name}
+                    loading="lazy"
                     className="w-28 h-28 rounded-full object-cover shadow-card border-4 border-white/90"
                   />
                 ) : (

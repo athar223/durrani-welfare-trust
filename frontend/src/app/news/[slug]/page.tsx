@@ -59,7 +59,7 @@ export default function NewsDetailPage() {
       <article className="bg-white">
       {post.cover_image && (
         <div className="aspect-[3/1] bg-gray-100 overflow-hidden">
-          <img src={mediaUrl(post.cover_image)} alt={post.title} className="w-full h-full object-cover" />
+          <img src={mediaUrl(post.cover_image)} alt={post.title} loading="lazy" className="w-full h-full object-cover" />
         </div>
       )}
 

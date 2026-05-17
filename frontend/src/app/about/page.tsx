@@ -16,14 +16,11 @@ interface AboutSectionData {
 const STATIC_ABOUT = {
   title: 'About Durrani Welfare Trust',
   content:
-    'Durrani Welfare Trust is a registered NGO founded in 2017 in Konodas, Gilgit-Baltistan, ' +
-    'Pakistan by Mr. Waheed Faraz Durrani, who lost his own parents at the age of four months. ' +
-    'From his childhood struggles emerged a lifelong dream: that no child should grow up without ' +
-    'shelter, care, and affection.\n\nAfter his passing, his daughter Aman Faraz Durrani — then ' +
-    'only 19 years old — took the responsibility of carrying his legacy forward. Today, the Trust ' +
-    'runs an orphanage for over 50 girls, a newborn care and adoption programme, free ambulance ' +
-    'services, women empowerment through the Rawasia Waheed HUB, clean water infrastructure ' +
-    'projects, and extensive food and relief distribution across Gilgit-Baltistan.',
+    'Durrani Welfare Trust is a registered NGO founded in 2017 in Konodas by Waheed Faraz Durrani. ' +
+    'Having lost his own parents at just four months old, he turned his childhood struggles into a ' +
+    'lifelong mission: ensuring that no child grows up without shelter, care, education, and affection.\n\n' +
+    'Today, alongside his daughter Aman Faraz Durrani, the Trust continues to serve humanity across ' +
+    'Gilgit-Baltistan, providing hope and support to thousands of deserving families.',
 };
 
 export default function AboutPage() {

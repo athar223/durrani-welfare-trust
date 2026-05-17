@@ -85,10 +85,15 @@ export default function AdminLayout({ children, title, actions }: AdminLayoutPro
       items: [
         { label: 'Site Settings', href: '/admin/cms/settings', icon: Settings },
         { label: 'Hero Banners', href: '/admin/cms/hero', icon: ImageIcon },
-        { label: 'News & Posts', href: '/admin/cms/news', icon: Megaphone },
-        { label: 'Gallery', href: '/admin/cms/gallery', icon: ImageIcon },
+        { label: 'About Sections', href: '/admin/cms/about', icon: FileText },
+        { label: 'Team Members', href: '/admin/cms/team', icon: Users },
         { label: 'Services', href: '/admin/cms/services', icon: Bell },
         { label: 'Campaigns', href: '/admin/cms/campaigns', icon: Heart },
+        { label: 'News & Posts', href: '/admin/cms/news', icon: Megaphone },
+        { label: 'Gallery', href: '/admin/cms/gallery', icon: ImageIcon },
+        { label: 'Testimonials', href: '/admin/cms/testimonials', icon: FileText },
+        { label: 'Statistics', href: '/admin/cms/stats', icon: Database },
+        { label: 'Awards', href: '/admin/cms/awards', icon: Bell },
       ],
     },
     {

@@ -28,7 +28,7 @@ export function clearTokens() {
 
 export const api: AxiosInstance = axios.create({
   baseURL: API_BASE,
-  timeout: 30000,
+  timeout: 6000,
 });
 
 api.interceptors.request.use((config) => {
@@ -73,6 +73,10 @@ export const publicApi = {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
   submitDonation: (data: any) => api.post('/public-donations/', data),
+  getTeamMembers: (params?: any) => api.get('/team-members/', { params }),
+  getTestimonials: () => api.get('/testimonials/'),
+  getStatistics: () => api.get('/statistics/'),
+  getAwards: () => api.get('/awards/'),
 };
 
 // ==========================================================
@@ -161,6 +165,10 @@ export const adminApi = {
   cmsNews: makeResource('/news'),
   cmsGallery: makeResource('/gallery'),
   cmsCampaigns: makeResource('/campaigns'),
+  teamMembers: makeResource('/team-members'),
+  testimonials: makeResource('/testimonials'),
+  statistics: makeResource('/statistics'),
+  awards: makeResource('/awards'),
 };
 
 export function mediaUrl(path: string | null | undefined): string {

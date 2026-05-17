@@ -1,9 +1,33 @@
+'use client';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Quote, Heart, ArrowRight, Award, Shield, Star } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import PublicLayout from '@/components/PublicLayout';
+import { publicApi, mediaUrl } from '@/lib/api';
 
 export default function CEOMessagePage() {
+  const [content, setContent] = useState<string>('');
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    publicApi.getAboutSections()
+      .then((r) => {
+        const sections: any[] = r.data.results ?? r.data;
+        const cm = sections.find((s: any) => s.section === 'ceo_message');
+        if (cm) {
+          setContent(cm.content);
+          if (cm.image) setPhoto(cm.image);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const photoSrc = photo ? mediaUrl(photo) : '/team/ceo.jpeg';
+  const paragraphs = content ? content.split('\n\n').filter(Boolean) : [];
+
   return (
     <PublicLayout>
       <PageHeader
@@ -21,24 +45,18 @@ export default function CEOMessagePage() {
             <div className="lg:col-span-1 space-y-4">
               <div className="bg-white rounded-2xl overflow-hidden shadow-soft">
                 <div className="bg-gradient-to-br from-dwt-700 to-dwt-500 py-10 text-center">
-                  <img
-                    src="/team/ceo.jpeg"
-                    alt="Ms. Aman Faraz Durrani"
-                    className="w-40 h-40 mx-auto rounded-full object-cover shadow-card border-4 border-white/95"
-                  />
+                  <img src={photoSrc} alt="Ms. Aman Faraz Durrani" loading="lazy" className="w-40 h-40 mx-auto rounded-full object-cover shadow-card border-4 border-white/95" />
                 </div>
                 <div className="p-6 text-center">
                   <h3 className="font-heading font-bold text-xl mb-1">Ms. Aman Faraz Durrani</h3>
                   <p className="text-dwt-600 font-semibold text-sm mb-1">CEO & Trustee</p>
                   <p className="text-xs text-gray-500 mb-3">Konodas, Gilgit-Baltistan</p>
                   <p className="text-xs text-gray-600 leading-relaxed">
-                    Social entrepreneur and humanitarian who took over the Trust at age 19
-                    and grew it into a nationally recognised welfare institution.
+                    Social entrepreneur and humanitarian proudly working alongside her father to serve thousands across Gilgit-Baltistan.
                   </p>
                 </div>
               </div>
 
-              {/* Awards */}
               <div className="bg-white rounded-2xl shadow-soft p-5 space-y-3">
                 <h4 className="font-heading font-bold text-sm text-dwt-800 mb-2 flex items-center gap-2">
                   <Award size={16} className="text-dwt-500" /> Awards & Recognition
@@ -63,7 +81,6 @@ export default function CEOMessagePage() {
                 })}
               </div>
 
-              {/* Commitments */}
               <div className="bg-dwt-50 rounded-2xl p-5">
                 <h4 className="font-heading font-bold text-sm text-dwt-800 mb-3">Our Commitments</h4>
                 <ul className="text-xs text-gray-700 space-y-2">
@@ -80,70 +97,31 @@ export default function CEOMessagePage() {
             <div className="lg:col-span-2">
               <Quote className="text-dwt-200 mb-4" size={48} />
 
-              <p className="text-gray-700 leading-relaxed mb-5">
-                Assalamu Alaikum — Dear Donors, Supporters, and Friends of Durrani Welfare Trust,
-              </p>
+              {loading ? (
+                <div className="space-y-3">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="h-4 bg-gray-100 rounded animate-pulse" style={{ width: `${80 + (i % 4) * 5}%` }} />
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {paragraphs.map((para, i) => {
+                    if (para.startsWith('"') || para.startsWith('“')) {
+                      return (
+                        <div key={i} className="my-8 pl-6 border-l-4 border-dwt-500 bg-dwt-50 p-5 rounded-r-xl">
+                          <p className="text-dwt-800 italic font-semibold leading-relaxed">{para}</p>
+                        </div>
+                      );
+                    }
+                    return (
+                      <p key={i} className="text-gray-700 leading-relaxed mb-5">{para}</p>
+                    );
+                  })}
+                </>
+              )}
 
-              <p className="text-gray-700 leading-relaxed mb-5">
-                I am Aman Faraz Durrani, a young social entrepreneur from Konodas, Gilgit-Baltistan.
-                I am the CEO and Trustee of Durrani Welfare Trust — an organisation my father,
-                Mr. Waheed Faraz Durrani, founded in 2017 with a single dream: that no child should
-                grow up without shelter, care, and affection.
-              </p>
-
-              <p className="text-gray-700 leading-relaxed mb-5">
-                When my father passed away, I was 19 years old. Many thought the Trust would
-                close with him. Instead, I chose to carry his legacy forward — not because it was
-                easy, but because his dream had become my own. Today, I lead an organisation that
-                shelters over 50 orphan girls, runs free 24/7 ambulance services, empowers women
-                through skills training, distributes food to thousands of families each Ramadan,
-                and gives orphan girls a dignified new beginning through our marriage support programme.
-              </p>
-
-              <div className="my-8 pl-6 border-l-4 border-dwt-500 bg-dwt-50 p-5 rounded-r-xl">
-                <p className="text-dwt-800 italic font-semibold leading-relaxed">
-                  "At Durrani Welfare, we don't just provide shelter — we create family.
-                  Every child is given not only a safe home, but also love, education, healthcare,
-                  and the opportunity to grow into a confident, independent individual."
-                </p>
-              </div>
-
-              <h3 className="font-heading font-bold text-xl text-dwt-800 mt-8 mb-3">Our Impact — By the Numbers</h3>
-
-              <div className="grid sm:grid-cols-3 gap-4 mb-6">
-                {[
-                  { value: '50+',    label: 'Orphan Girls in Care' },
-                  { value: '5,000+', label: 'Ambulance Patients Served' },
-                  { value: '3,000+', label: 'Families Fed in Ramadan' },
-                ].map((s) => (
-                  <div key={s.label} className="bg-dwt-50 rounded-xl p-5 text-center">
-                    <div className="text-3xl font-heading font-bold text-dwt-700">{s.value}</div>
-                    <div className="text-xs text-gray-600 mt-1">{s.label}</div>
-                  </div>
-                ))}
-              </div>
-
-              <h3 className="font-heading font-bold text-xl text-dwt-800 mt-8 mb-3">Serving with Transparency</h3>
-              <p className="text-gray-700 leading-relaxed mb-5">
-                Every donation we receive is a sacred trust. We ensure that funds are used where
-                they are needed most — directly benefiting the people we serve. We welcome scrutiny
-                and believe that transparency is the foundation of lasting partnerships.
-              </p>
-
-              <p className="text-gray-700 leading-relaxed mb-5">
-                I am grateful to every donor, volunteer, and supporter who has believed in our mission.
-                Your generosity has built homes, funded education, saved lives through our ambulances,
-                and given orphan girls the gift of family. Together, we are fulfilling my father's dream
-                — and with your continued support, we will reach far more families in the years ahead.
-              </p>
-
-              <p className="text-gray-700 leading-relaxed mb-8 font-medium">
-                May Allah bless your generosity and accept your contributions as Sadqa Jaria.
-                Thank you for being part of the DWT family.
-              </p>
-
-              <div className="flex items-center gap-4 pt-6 border-t border-gray-200">
-                <img src="/team/ceo.jpeg" alt="Aman Faraz Durrani" className="w-14 h-14 rounded-full object-cover border-2 border-dwt-200" />
+              <div className="flex items-center gap-4 pt-6 border-t border-gray-200 mt-4">
+                <img src={photoSrc} alt="Aman Faraz Durrani" loading="lazy" className="w-14 h-14 rounded-full object-cover border-2 border-dwt-200" />
                 <div>
                   <div className="font-heading font-bold text-lg text-dwt-800 italic">— Aman Faraz Durrani</div>
                   <div className="text-sm text-gray-500">CEO & Trustee, Durrani Welfare Trust</div>

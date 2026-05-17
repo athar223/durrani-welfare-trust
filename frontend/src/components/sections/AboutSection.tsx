@@ -15,9 +15,9 @@ const FALLBACK_CONTENT =
   'Durrani Welfare Trust is a registered NGO founded in 2017 in Konodas, Gilgit-Baltistan by ' +
   'Mr. Waheed Faraz Durrani, who lost his own parents at the age of four months. From his ' +
   'childhood struggles emerged a lifelong dream: that no child should grow up without shelter, ' +
-  'care, and affection.\n\nAfter his passing, his daughter Aman Faraz Durrani — then only 19 — ' +
-  'took the responsibility of carrying his legacy forward. Today the Trust shelters over 50 ' +
-  'orphan girls and serves thousands of families across Gilgit-Baltistan.';
+  'care, and affection.\n\nToday, alongside his daughter Aman Faraz Durrani, the Trust shelters over 50 ' +
+  'orphan girls and serves thousands of families across Gilgit-Baltistan, continuing to expand ' +
+  'its mission of humanity and welfare.';
 
 const highlights = [
   'Orphanage for 50+ girls — shelter, education & healthcare',
@@ -54,6 +54,7 @@ export default function AboutSection() {
               <img
                 src="/gallery/orphanage-girls.jpeg"
                 alt="Girls at Durrani Welfare Trust Orphanage"
+                loading="lazy"
                 className="w-full h-[480px] object-cover"
               />
               {/* Green overlay gradient at bottom */}
@@ -65,14 +66,14 @@ export default function AboutSection() {
             </div>
 
             {/* Floating badge */}
-            <div className="absolute -top-4 -right-4 bg-dwt-500 text-white rounded-2xl p-4 shadow-card text-center">
+            <div className="absolute top-4 right-4 xl:-top-4 xl:-right-4 bg-dwt-500 text-white rounded-2xl p-4 shadow-card text-center">
               <div className="font-heading font-bold text-3xl leading-none">2017</div>
               <div className="text-xs mt-1 text-dwt-100">Founded</div>
             </div>
 
             {/* Second small photo */}
-            <div className="absolute -bottom-6 -right-6 w-40 h-40 rounded-xl overflow-hidden shadow-card border-4 border-white hidden xl:block">
-              <img src="/gallery/infant-care.jpeg" alt="Infant care" className="w-full h-full object-cover" />
+            <div className="absolute bottom-6 right-6 xl:-bottom-6 xl:-right-6 w-32 h-32 xl:w-40 xl:h-40 rounded-xl overflow-hidden shadow-card border-4 border-white hidden xl:block">
+              <img src="/gallery/infant-care.jpeg" alt="Infant care" loading="lazy" className="w-full h-full object-cover" />
             </div>
           </div>
 

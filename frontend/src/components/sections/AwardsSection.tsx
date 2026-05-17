@@ -54,7 +54,7 @@ export default function AwardsSection() {
               <div key={award.title} className="bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-card transition-shadow">
                 {/* Photo */}
                 <div className={`relative h-44 bg-gradient-to-br ${award.color} overflow-hidden`}>
-                  <img src={award.image} alt={award.title} className="w-full h-full object-cover opacity-30" />
+                  <img src={award.image} alt={award.title} loading="lazy" className="w-full h-full object-cover opacity-30" />
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
                     <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mb-2">
                       <Icon size={28} />

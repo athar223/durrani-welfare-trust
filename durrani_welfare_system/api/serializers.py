@@ -16,6 +16,7 @@ from durrani_welfare_system.cms.models import (
     NewsPost, GalleryAlbum, GalleryImage, DonationCampaign,
     ContactMessage, NewsletterSubscriber,
     StudentApplication, VolunteerApplication, PublicDonation,
+    TeamMember, Testimonial, Statistic, Award,
 )
 
 User = get_user_model()
@@ -120,6 +121,32 @@ class DonationCampaignSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DonationCampaign
+        fields = '__all__'
+
+
+class TeamMemberSerializer(serializers.ModelSerializer):
+    category_display = serializers.CharField(source='get_category_display', read_only=True)
+
+    class Meta:
+        model = TeamMember
+        fields = '__all__'
+
+
+class TestimonialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Testimonial
+        fields = '__all__'
+
+
+class StatisticSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Statistic
+        fields = '__all__'
+
+
+class AwardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Award
         fields = '__all__'
 
 

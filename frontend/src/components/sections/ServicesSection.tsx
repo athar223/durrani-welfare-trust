@@ -35,17 +35,9 @@ const PROGRAM_IMAGES: Record<string, string> = {
   'seminars-youth-empowerment':'/gallery/eve-vision-award.jpeg',
 };
 
-const STATIC_SERVICES: Service[] = [
-  { id: 1, slug: 'orphanage-for-girls',        title: 'Orphanage for Girls',       short_description: 'Safe home for 50+ orphan girls with shelter, education, and healthcare in Gilgit-Baltistan.',         icon: 'home',            is_featured: true },
-  { id: 2, slug: 'ambulance-services',          title: 'Free Ambulance Services',   short_description: '24/7 free emergency ambulance — over 5,000 patients served across Gilgit-Baltistan.',               icon: 'ambulance',       is_featured: true },
-  { id: 3, slug: 'women-empowerment',           title: 'Women Empowerment',         short_description: 'Rawasia Waheed HUB — sewing, embroidery, and vocational training for financial independence.',        icon: 'users',           is_featured: true },
-  { id: 4, slug: 'education-programmes',        title: 'Education Programmes',      short_description: 'Madrasa Fatima lil Banat providing quality Islamic and academic education to orphan girls.',           icon: 'graduation-cap',  is_featured: true },
-  { id: 5, slug: 'food-distribution',           title: 'Food & Rations',            short_description: 'Annual Ramadan rations, Eid clothing, and emergency food packages for 3,000+ families.',              icon: 'heart',           is_featured: false },
-  { id: 6, slug: 'clean-water-infrastructure',  title: 'Clean Water Wells',         short_description: 'Building water wells in remote Gilgit-Baltistan communities as Sadqa Jaria.',                         icon: 'droplets',        is_featured: false },
-];
-
 export default function ServicesSection() {
-  const [services, setServices] = useState<Service[]>(STATIC_SERVICES);
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     publicApi
@@ -54,7 +46,8 @@ export default function ServicesSection() {
         const data: Service[] = res.data.results ?? res.data;
         if (data.length > 0) setServices(data);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   const featured = services.filter((s) => s.is_featured);
@@ -72,6 +65,20 @@ export default function ServicesSection() {
           </p>
         </div>
 
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-soft animate-pulse">
+                <div className="h-48 bg-gray-200" />
+                <div className="p-5 space-y-3">
+                  <div className="h-5 bg-gray-200 rounded w-3/4" />
+                  <div className="h-3 bg-gray-100 rounded w-full" />
+                  <div className="h-3 bg-gray-100 rounded w-5/6" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {display.map((service) => {
             const Icon = ICON_MAP[service.icon] ?? HelpCircle;
@@ -85,7 +92,7 @@ export default function ServicesSection() {
                 {/* Photo */}
                 <div className="relative h-48 bg-dwt-50 overflow-hidden">
                   {photo ? (
-                    <img src={photo} alt={service.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img src={photo} alt={service.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-dwt-50 to-dwt-100 flex items-center justify-center">
                       <Icon size={52} className="text-dwt-300" />
@@ -115,6 +122,7 @@ export default function ServicesSection() {
             );
           })}
         </div>
+        )}
 
         <div className="text-center mt-10">
           <Link href="/services" className="inline-flex items-center gap-2 px-7 py-3.5 bg-dwt-500 text-white font-semibold rounded-lg hover:bg-dwt-600 transition-all shadow-soft">
