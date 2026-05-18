@@ -1,7 +1,12 @@
+'use client';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Images } from 'lucide-react';
+import { publicApi, mediaUrl } from '@/lib/api';
 
-const photos = [
+interface Photo { src: string; alt: string; }
+
+const FALLBACK_PHOTOS: Photo[] = [
   { src: '/gallery/orphanage-girls.jpeg',    alt: 'Orphan girls at DWT' },
   { src: '/gallery/ambulance-fleet.jpeg',    alt: 'DWT ambulance fleet' },
   { src: '/gallery/women-training.jpeg',     alt: 'Women empowerment training' },
@@ -11,6 +16,36 @@ const photos = [
 ];
 
 export default function GalleryPreviewSection() {
+  const [photos, setPhotos] = useState<Photo[]>(FALLBACK_PHOTOS);
+
+  useEffect(() => {
+    publicApi
+      .getGalleryAlbums()
+      .then((res) => {
+        const albums = res.data.results ?? res.data;
+        const collected: Photo[] = [];
+        for (const album of albums) {
+          if (album.cover_image) {
+            collected.push({
+              src: album.cover_image.startsWith('http') ? album.cover_image : mediaUrl(album.cover_image),
+              alt: album.title,
+            });
+          }
+          for (const img of album.images ?? []) {
+            if (img.image) {
+              collected.push({
+                src: img.image.startsWith('http') ? img.image : mediaUrl(img.image),
+                alt: img.caption || album.title,
+              });
+            }
+          }
+          if (collected.length >= 6) break;
+        }
+        if (collected.length > 0) setPhotos(collected.slice(0, 6));
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="section-padding bg-white">
       <div className="container-page">
@@ -32,7 +67,7 @@ export default function GalleryPreviewSection() {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {photos.map((photo, i) => (
             <Link
-              key={photo.src}
+              key={photo.src + i}
               href="/gallery"
               className={`relative overflow-hidden rounded-xl bg-gray-100 group ${i === 0 ? 'md:row-span-2' : ''}`}
               style={{ aspectRatio: i === 0 ? '1 / 1.1' : '4 / 3' }}

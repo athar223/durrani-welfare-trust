@@ -1,36 +1,40 @@
-import { Award, Shield, Star } from 'lucide-react';
+'use client';
+import { useEffect, useState } from 'react';
+import { Award, Shield, Star, Trophy } from 'lucide-react';
+import { publicApi, mediaUrl } from '@/lib/api';
 
-const awards = [
-  {
-    icon: Shield,
-    image: '/gallery/girls-certificates.jpeg',
-    title: 'Pride of Pakistan Award',
-    body: 'Awarded by ISPR (Inter Services Public Relations) during the 78th Independence Day celebrations — "Marka-e-Haq" — for outstanding humanitarian service.',
-    year: '2025',
-    color: 'from-green-600 to-green-700',
-    badge: 'ISPR',
-  },
-  {
-    icon: Star,
-    image: '/gallery/eve-vision-award.jpeg',
-    title: 'International EVE Vision Award',
-    body: 'Recognised by Vision of Women & Sahiba Writing Squad as an inspiring woman leader with outstanding global achievement.',
-    year: '2026',
-    color: 'from-purple-600 to-purple-700',
-    badge: 'International',
-  },
-  {
-    icon: Award,
-    image: '/gallery/safe-families.jpeg',
-    title: 'UNICEF Safe Families Certification',
-    body: 'Certified by UNICEF and the Social Welfare Department for our Safe Children and Safe Families training programmes under the Rawasia Waheed HUB.',
-    year: '2024',
-    color: 'from-blue-600 to-blue-700',
-    badge: 'UNICEF',
-  },
+interface AwardItem {
+  id: number;
+  title: string;
+  organization: string;
+  year: string;
+  description: string;
+  image: string | null;
+}
+
+const GRADIENTS = [
+  'from-green-600 to-green-700',
+  'from-purple-600 to-purple-700',
+  'from-blue-600 to-blue-700',
+  'from-dwt-600 to-dwt-800',
 ];
+const ICONS = [Shield, Star, Award, Trophy];
 
 export default function AwardsSection() {
+  const [awards, setAwards] = useState<AwardItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    publicApi
+      .getAwards()
+      .then((res) => {
+        const data = res.data.results ?? res.data;
+        if (data.length > 0) setAwards(data);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <section className="section-padding bg-gray-50">
       <div className="container-page">
@@ -47,31 +51,53 @@ export default function AwardsSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {awards.map((award) => {
-            const Icon = award.icon;
-            return (
-              <div key={award.title} className="bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-card transition-shadow">
-                {/* Photo */}
-                <div className={`relative h-44 bg-gradient-to-br ${award.color} overflow-hidden`}>
-                  <img src={award.image} alt={award.title} loading="lazy" className="w-full h-full object-cover opacity-30" />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                    <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mb-2">
-                      <Icon size={28} />
-                    </div>
-                    <span className="text-xs font-bold bg-white/20 px-3 py-1 rounded-full">{award.badge} · {award.year}</span>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-6">
-                  <h3 className="font-heading font-bold text-lg mb-3">{award.title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{award.body}</p>
+        {loading ? (
+          <div className="grid md:grid-cols-3 gap-6">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-soft animate-pulse">
+                <div className="h-44 bg-gray-200" />
+                <div className="p-6 space-y-3">
+                  <div className="h-5 bg-gray-200 rounded w-3/4" />
+                  <div className="h-3 bg-gray-100 rounded w-full" />
+                  <div className="h-3 bg-gray-100 rounded w-5/6" />
                 </div>
               </div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-3 gap-6">
+            {awards.map((award, i) => {
+              const Icon = ICONS[i % ICONS.length];
+              const gradient = GRADIENTS[i % GRADIENTS.length];
+              const imgSrc = award.image
+                ? (award.image.startsWith('http') ? award.image : mediaUrl(award.image))
+                : null;
+              return (
+                <div key={award.id} className="bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-card transition-shadow">
+                  <div className={`relative h-44 bg-gradient-to-br ${gradient} overflow-hidden`}>
+                    {imgSrc && (
+                      <img src={imgSrc} alt={award.title} loading="lazy" className="w-full h-full object-cover opacity-30" />
+                    )}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+                      <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mb-2">
+                        <Icon size={28} />
+                      </div>
+                      <span className="text-xs font-bold bg-white/20 px-3 py-1 rounded-full">
+                        {award.organization} · {award.year}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-heading font-bold text-lg mb-3">{award.title}</h3>
+                    {award.description && (
+                      <p className="text-sm text-gray-600 leading-relaxed">{award.description}</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
