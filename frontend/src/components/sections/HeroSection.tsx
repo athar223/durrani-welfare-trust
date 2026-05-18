@@ -41,7 +41,7 @@ export default function HeroSection() {
 
           {/* Left: Main content */}
           <div className="lg:col-span-3">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-full text-sm font-semibold mb-6 backdrop-blur">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6" style={{ backgroundColor: '#114a29', border: '1px solid #155a32' }}>
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               Serving Gilgit-Baltistan Since 2017
             </div>
@@ -90,7 +90,7 @@ export default function HeroSection() {
             ].map((s, i) => (
               <div
                 key={s.label}
-                className={`bg-gradient-to-br ${s.accent} backdrop-blur border border-white/10 rounded-2xl p-6 ${i % 2 === 1 ? 'mt-6' : ''}`}
+                className={`rounded-2xl p-6 ${i % 2 === 1 ? 'mt-6' : ''}`} style={{ backgroundColor: '#114a29', border: '1px solid #155a32' }}
               >
                 <div className="text-4xl font-heading font-bold text-dwt-200 mb-1">{s.value}</div>
                 <div className="text-xs text-gray-300 leading-relaxed whitespace-pre-line">{s.label}</div>

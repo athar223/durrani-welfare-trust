@@ -34,7 +34,7 @@ export default function TestimonialsSection() {
   }, []);
 
   return (
-    <section className="section-padding bg-dwt-800 text-white">
+    <section className="section-padding text-white" style={{ backgroundColor: '#0f3d22' }}>
       <div className="container-page">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <span className="text-dwt-200 font-bold text-sm uppercase tracking-wider">Stories of Impact</span>
@@ -48,15 +48,15 @@ export default function TestimonialsSection() {
         {loading ? (
           <div className="grid md:grid-cols-3 gap-6">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-white/10 border border-white/10 rounded-2xl p-6 animate-pulse">
-                <div className="h-8 w-8 bg-white/20 rounded mb-4" />
+              <div key={i} className="rounded-2xl p-6 animate-pulse" style={{ backgroundColor: '#114a29' }}>
+                <div className="h-8 w-8 rounded mb-4" style={{ backgroundColor: '#155a32' }} />
                 <div className="space-y-2 mb-6">
-                  <div className="h-3 bg-white/20 rounded w-full" />
-                  <div className="h-3 bg-white/20 rounded w-5/6" />
-                  <div className="h-3 bg-white/20 rounded w-4/6" />
+                  <div className="h-3 rounded w-full" style={{ backgroundColor: '#155a32' }} />
+                  <div className="h-3 rounded w-5/6" style={{ backgroundColor: '#155a32' }} />
+                  <div className="h-3 rounded w-4/6" style={{ backgroundColor: '#155a32' }} />
                 </div>
-                <div className="flex items-center gap-3 pt-4 border-t border-white/10">
-                  <div className="w-12 h-12 rounded-full bg-white/20" />
+                <div className="flex items-center gap-3 pt-4 border-t border-dwt-600">
+                  <div className="w-12 h-12 rounded-full" style={{ backgroundColor: '#155a32' }} />
                   <div className="space-y-1.5">
                     <div className="h-3 bg-white/20 rounded w-24" />
                     <div className="h-2.5 bg-white/10 rounded w-32" />
@@ -71,10 +71,10 @@ export default function TestimonialsSection() {
               const initials = t.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase();
               const color = COLORS[i % COLORS.length];
               return (
-                <div key={t.id} className="bg-white/10 border border-white/10 rounded-2xl p-6 hover:bg-white/15 transition-all">
+                <div key={t.id} className="rounded-2xl p-6" style={{ backgroundColor: '#114a29' }}>
                   <Quote className="text-dwt-300 mb-4" size={32} />
                   <p className="text-gray-200 leading-relaxed mb-6 italic text-sm">"{t.quote}"</p>
-                  <div className="flex items-center gap-3 pt-4 border-t border-white/10">
+                  <div className="flex items-center gap-3 pt-4 border-t border-dwt-600">
                     {t.photo ? (
                       <img src={mediaUrl(t.photo)} alt={t.name} loading="lazy" className="w-12 h-12 rounded-full object-cover flex-shrink-0" />
                     ) : (
