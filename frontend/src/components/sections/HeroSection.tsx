@@ -1,11 +1,33 @@
+'use client';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Heart, Users, GraduationCap, Phone, ChevronDown } from 'lucide-react';
+import { publicApi, mediaUrl } from '@/lib/api';
 
 export default function HeroSection() {
+  const [bgImage, setBgImage] = useState('/hero/banner.jpeg');
+
+  useEffect(() => {
+    publicApi
+      .getHeroBanners()
+      .then((res) => {
+        const banners = res.data.results ?? res.data;
+        const active = banners.find((b: any) => b.is_active) ?? banners[0];
+        if (active?.background_image) {
+          setBgImage(
+            active.background_image.startsWith('http')
+              ? active.background_image
+              : mediaUrl(active.background_image)
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="relative text-white overflow-hidden min-h-[90vh] flex flex-col">
       {/* Background */}
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/hero/banner.jpeg)' }} />
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${bgImage})` }} />
       <div className="absolute inset-0 bg-gradient-to-r from-dwt-900/92 via-dwt-900/80 to-dwt-800/60" />
 
       {/* Decorative elements */}
