@@ -3,7 +3,7 @@ import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Heart, Send, CheckCircle } from 'lucide-react';
+import { Heart, Send, CheckCircle, Copy, Building2, Smartphone } from 'lucide-react';
 import { publicApi } from '@/lib/api';
 import PageHeader from '@/components/PageHeader';
 import PublicLayout from '@/components/PublicLayout';
@@ -33,7 +33,7 @@ export default function DonatePage() {
 function DonateForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const campaignSlug = searchParams.get('campaign');
+  const _campaignSlug = searchParams.get('campaign');
 
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -99,21 +99,38 @@ function DonateForm() {
         image="/gallery/food-distribution.jpeg"
       />
 
-      <section className="py-8 bg-white border-b border-gray-100">
+      <section className="py-10 bg-white border-b border-gray-100">
         <div className="container-page max-w-3xl">
-          <div className="bg-dwt-50 border border-dwt-200 rounded-2xl p-6 mb-2">
-            <h3 className="font-heading font-bold text-dwt-800 text-lg mb-3">How to Transfer</h3>
-            <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-700">
-              <div>
-                <p className="font-semibold text-dwt-700 mb-1">Bank Transfer</p>
-                <p>Contact us at <a href="tel:03129700108" className="text-dwt-600 font-bold">03129700108</a> or email <a href="mailto:duraniwelfaretrust@gmail.com" className="text-dwt-600 font-bold">duraniwelfaretrust@gmail.com</a> to receive our bank account details.</p>
-              </div>
-              <div>
-                <p className="font-semibold text-dwt-700 mb-1">Cash / Cheque</p>
-                <p>Visit us at Konodas, Gilgit-Baltistan or arrange a pickup by calling <a href="tel:03129700108" className="text-dwt-600 font-bold">03129700108</a>.</p>
-              </div>
-            </div>
+          <div className="text-center mb-6">
+            <h3 className="font-heading font-bold text-dwt-800 text-2xl">Payment Details</h3>
+            <p className="text-gray-500 text-sm mt-1">Transfer directly — then fill the form below to confirm your donation</p>
           </div>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <PayCard
+              icon={<Building2 size={22} className="text-dwt-600" />}
+              label="Bank Al-Maktarmah"
+              account="01091020311714117292"
+              sub="Account Number"
+              color="bg-dwt-50 border-dwt-200"
+            />
+            <PayCard
+              icon={<Building2 size={22} className="text-blue-600" />}
+              label="Albaraka Bank Gilgit"
+              account="0000120453377018"
+              sub="Account Number"
+              color="bg-blue-50 border-blue-200"
+            />
+            <PayCard
+              icon={<Smartphone size={22} className="text-green-600" />}
+              label="EasyPaisa"
+              account="0346 9700107"
+              sub="Waheed Faraz"
+              color="bg-green-50 border-green-200"
+            />
+          </div>
+          <p className="text-xs text-gray-500 text-center mt-4">
+            After transferring, enter your reference/transaction number in the form below so we can verify your donation.
+          </p>
         </div>
       </section>
 
@@ -210,7 +227,8 @@ function DonateForm() {
               <div>
                 <label className="form-label">Payment Method *</label>
                 <select {...register('payment_method', { required: true })} className="form-input">
-                  <option value="bank_transfer">Bank Transfer</option>
+                  <option value="bank_transfer">Bank Transfer (Bank Al-Maktarmah / Albaraka)</option>
+                  <option value="easypaisa">EasyPaisa (0346 9700107)</option>
                   <option value="cash">Cash</option>
                   <option value="cheque">Cheque</option>
                   <option value="online">Online Payment</option>
@@ -259,5 +277,36 @@ function DonateForm() {
         </div>
       </section>
     </PublicLayout>
+  );
+}
+
+function PayCard({ icon, label, account, sub, color }: {
+  icon: React.ReactNode;
+  label: string;
+  account: string;
+  sub: string;
+  color: string;
+}) {
+  function copy() {
+    navigator.clipboard.writeText(account.replace(/\s/g, ''));
+    toast.success('Copied!');
+  }
+  return (
+    <div className={`border rounded-2xl p-5 ${color}`}>
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm">
+          {icon}
+        </div>
+        <span className="font-semibold text-sm text-gray-800">{label}</span>
+      </div>
+      <div className="font-heading font-bold text-lg tracking-wide text-gray-900 break-all">{account}</div>
+      <div className="text-xs text-gray-500 mt-0.5 mb-3">{sub}</div>
+      <button
+        onClick={copy}
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-gray-900 bg-white px-3 py-1.5 rounded-lg shadow-sm transition-all"
+      >
+        <Copy size={12} /> Copy
+      </button>
+    </div>
   );
 }
