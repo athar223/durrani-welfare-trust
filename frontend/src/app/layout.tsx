@@ -1,7 +1,12 @@
 import type { Metadata, Viewport } from 'next';
+import dynamic from 'next/dynamic';
 import './globals.css';
-import { Toaster } from 'react-hot-toast';
 import { Libre_Baskerville, Lato } from 'next/font/google';
+
+const Toaster = dynamic(
+  () => import('react-hot-toast').then((m) => m.Toaster),
+  { ssr: false }
+);
 
 const libreBaskerville = Libre_Baskerville({
   weight: ['400', '700'],
