@@ -1,12 +1,7 @@
 import type { Metadata, Viewport } from 'next';
-import dynamic from 'next/dynamic';
 import './globals.css';
 import { Libre_Baskerville, Lato } from 'next/font/google';
-
-const Toaster = dynamic(
-  () => import('react-hot-toast').then((m) => m.Toaster),
-  { ssr: false }
-);
+import ToasterClient from '@/components/ToasterClient';
 
 const libreBaskerville = Libre_Baskerville({
   weight: ['400', '700'],
@@ -38,15 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${libreBaskerville.variable} ${lato.variable} bg-white text-gray-900 antialiased`}>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: { background: '#1a6b3c', color: 'white' },
-            success: { iconTheme: { primary: 'white', secondary: '#1a6b3c' } },
-            error: { style: { background: '#dc2626' } },
-          }}
-        />
+        <ToasterClient />
         {children}
       </body>
     </html>
