@@ -28,7 +28,7 @@ export function clearTokens() {
 
 export const api: AxiosInstance = axios.create({
   baseURL: API_BASE,
-  timeout: 6000,
+  timeout: 20000,
 });
 
 api.interceptors.request.use((config) => {

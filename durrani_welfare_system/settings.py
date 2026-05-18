@@ -187,14 +187,7 @@ SIMPLE_JWT = {
 }
 
 # ============================================================
-# CORS - allow Next.js frontend
+# CORS - allow all origins (public NGO website)
 # ============================================================
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
-
-# Allow all origins in DEBUG (dev convenience)
-if DEBUG:
-    CORS_ALLOW_ALL_ORIGINS = True
