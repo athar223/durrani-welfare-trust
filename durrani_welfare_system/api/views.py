@@ -62,36 +62,56 @@ class SiteSettingsView(generics.RetrieveUpdateAPIView):
         return obj
 
 
+def _is_admin(request):
+    return request.user and request.user.is_authenticated and getattr(request.user, 'is_admin_user', False)
+
+
 class HeroBannerViewSet(viewsets.ModelViewSet):
-    queryset = HeroBanner.objects.filter(is_active=True)
     serializer_class = s.HeroBannerSerializer
     permission_classes = [ReadOnlyOrAdmin]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
+    def get_queryset(self):
+        if _is_admin(self.request):
+            return HeroBanner.objects.all()
+        return HeroBanner.objects.filter(is_active=True)
+
 
 class AboutSectionViewSet(viewsets.ModelViewSet):
-    queryset = AboutSection.objects.filter(is_active=True)
     serializer_class = s.AboutSectionSerializer
     permission_classes = [ReadOnlyOrAdmin]
     lookup_field = 'section'
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
+    def get_queryset(self):
+        if _is_admin(self.request):
+            return AboutSection.objects.all()
+        return AboutSection.objects.filter(is_active=True)
+
 
 class ServiceViewSet(viewsets.ModelViewSet):
-    queryset = Service.objects.filter(is_active=True)
     serializer_class = s.ServiceSerializer
     permission_classes = [ReadOnlyOrAdmin]
     lookup_field = 'slug'
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
+    def get_queryset(self):
+        if _is_admin(self.request):
+            return Service.objects.all()
+        return Service.objects.filter(is_active=True)
+
 
 class NewsPostViewSet(viewsets.ModelViewSet):
-    queryset = NewsPost.objects.filter(is_published=True)
     permission_classes = [ReadOnlyOrAdmin]
     lookup_field = 'slug'
     filterset_fields = ['category', 'is_featured']
     search_fields = ['title', 'summary', 'content']
     parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def get_queryset(self):
+        if _is_admin(self.request):
+            return NewsPost.objects.all()
+        return NewsPost.objects.filter(is_published=True)
 
     def get_serializer_class(self):
         if self.action in ('list',):
@@ -100,47 +120,71 @@ class NewsPostViewSet(viewsets.ModelViewSet):
 
 
 class GalleryAlbumViewSet(viewsets.ModelViewSet):
-    queryset = GalleryAlbum.objects.filter(is_active=True).prefetch_related('images')
     serializer_class = s.GalleryAlbumSerializer
     permission_classes = [ReadOnlyOrAdmin]
     lookup_field = 'slug'
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
+    def get_queryset(self):
+        if _is_admin(self.request):
+            return GalleryAlbum.objects.all().prefetch_related('images')
+        return GalleryAlbum.objects.filter(is_active=True).prefetch_related('images')
+
 
 class DonationCampaignViewSet(viewsets.ModelViewSet):
-    queryset = DonationCampaign.objects.filter(is_active=True)
     serializer_class = s.DonationCampaignSerializer
     permission_classes = [ReadOnlyOrAdmin]
     lookup_field = 'slug'
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
+    def get_queryset(self):
+        if _is_admin(self.request):
+            return DonationCampaign.objects.all()
+        return DonationCampaign.objects.filter(is_active=True)
+
 
 class TeamMemberViewSet(viewsets.ModelViewSet):
-    queryset = TeamMember.objects.filter(is_active=True)
     serializer_class = s.TeamMemberSerializer
     permission_classes = [ReadOnlyOrAdmin]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
     filterset_fields = ['category']
 
+    def get_queryset(self):
+        if _is_admin(self.request):
+            return TeamMember.objects.all()
+        return TeamMember.objects.filter(is_active=True)
+
 
 class TestimonialViewSet(viewsets.ModelViewSet):
-    queryset = Testimonial.objects.filter(is_active=True)
     serializer_class = s.TestimonialSerializer
     permission_classes = [ReadOnlyOrAdmin]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
+    def get_queryset(self):
+        if _is_admin(self.request):
+            return Testimonial.objects.all()
+        return Testimonial.objects.filter(is_active=True)
+
 
 class StatisticViewSet(viewsets.ModelViewSet):
-    queryset = Statistic.objects.filter(is_active=True)
     serializer_class = s.StatisticSerializer
     permission_classes = [ReadOnlyOrAdmin]
 
+    def get_queryset(self):
+        if _is_admin(self.request):
+            return Statistic.objects.all()
+        return Statistic.objects.filter(is_active=True)
+
 
 class AwardViewSet(viewsets.ModelViewSet):
-    queryset = Award.objects.filter(is_active=True)
     serializer_class = s.AwardSerializer
     permission_classes = [ReadOnlyOrAdmin]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def get_queryset(self):
+        if _is_admin(self.request):
+            return Award.objects.all()
+        return Award.objects.filter(is_active=True)
 
 
 # ============================================================
